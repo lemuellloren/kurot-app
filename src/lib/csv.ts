@@ -461,20 +461,4 @@ export function parseImportCSV(
   }
 }
 
-// Type guards for re-exported types used by the import parser
-interface Goal {
-  id: string; name: string; targetAmount: number; currentAmount: number
-  startDate: string; targetDate: string; notes: string; color: string
-  contributions: { id: string; amount: number; date: string; note: string }[]
-}
-interface Debt {
-  id: string; type: 'owe' | 'owed'; name: string; description: string
-  totalAmount: number; remainingAmount: number; dueDate: string
-  notes: string; status: 'active' | 'settled'
-  payments: { id: string; amount: number; date: string; note: string }[]
-}
-interface RecurringEntry {
-  id: string; name: string; amount: number; type: 'income' | 'expense'
-  category: Category; frequency: 'daily' | 'weekly' | 'monthly' | 'yearly'
-  nextDue: string; active: boolean
-}
+
