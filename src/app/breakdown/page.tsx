@@ -27,12 +27,13 @@ export default function BreakdownPage() {
 
   return (
     <AppShell>
-      <div className="p-3.5 space-y-3">
+      <div className="p-3.5 lg:p-0 space-y-3 lg:space-y-5">
         <HeroCard
           eyebrow="Spending Breakdown"
           title="Where your money goes"
           subtitle={`${fp(total)} spent this month`}
         />
+        <div className="lg:grid lg:grid-cols-2 lg:gap-5 space-y-3 lg:space-y-0">
 
         {/* Donut chart */}
         {spentEnvs.length > 0 ? (
@@ -124,6 +125,7 @@ export default function BreakdownPage() {
             ))}
           </div>
         </div>
+        </div>{/* end desktop grid */}
       </div>
     </AppShell>
   )

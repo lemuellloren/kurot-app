@@ -4,21 +4,21 @@
 @tailwind utilities;
 
 :root {
-  --brand: #1a5c38;
-  --gold: #e8b420;
-  --mint: #4ade80;
+  --brand: #1a6127;
+  --gold:  #e8b420;
+  --mint:  #51d768;
 }
 
 * { -webkit-tap-highlight-color: transparent; }
 
 html, body {
   height: 100%;
-  background: #1a5c38;
+  background: #1a6127;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   overscroll-behavior: none;
 }
 
-body { display: flex; justify-content: center; }
+body { display: block; }
 
 .font-serif { font-family: 'Playfair Display', Georgia, serif; }
 
@@ -58,7 +58,36 @@ body { display: flex; justify-content: center; }
     @apply flex flex-col items-center gap-0.5 py-1.5 px-2 text-[10px] font-bold uppercase tracking-wide text-green-700/40 transition-colors duration-150 flex-1;
   }
   .nav-tab.active { @apply text-green-800; }
+
+  /* Desktop card grids */
+  .desktop-grid-2 {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-4;
+  }
+  .desktop-grid-3 {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-4;
+  }
+  .desktop-grid-4 {
+    @apply grid grid-cols-2 lg:grid-cols-4 gap-3;
+  }
 }
 
+/* Hide scrollbars */
 ::-webkit-scrollbar { display: none; }
 * { scrollbar-width: none; }
+
+/* Desktop hover states */
+@media (min-width: 1024px) {
+  .card {
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .card:hover {
+    box-shadow: 0 4px 20px rgba(26,97,39,0.13);
+  }
+}
+
+/* Hide mobile hero cards on desktop since AppShell top bar provides context */
+@media (min-width: 1024px) {
+  .mobile-hero-only {
+    display: none;
+  }
+}

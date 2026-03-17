@@ -151,7 +151,7 @@ export const useKurotStore = create<KurotState>()(
         { id: 'r2', name: 'Netflix', amount: 549, type: 'expense', category: 'Entertainment', frequency: 'monthly', nextDue: today(), envelopeId: 'e5', active: true },
       ],
       goals: [
-        { id: 'g1', name: 'Emergency Fund', targetAmount: 100000, currentAmount: 32000, startDate: '2026-01-01', targetDate: '2026-12-31', notes: '3 months of expenses', color: '#1a5c38', contributions: [{ id: 'gc1', amount: 32000, date: '2026-01-15', note: 'Initial deposit' }] },
+        { id: 'g1', name: 'Emergency Fund', targetAmount: 100000, currentAmount: 32000, startDate: '2026-01-01', targetDate: '2026-12-31', notes: '3 months of expenses', color: '#1a6127', contributions: [{ id: 'gc1', amount: 32000, date: '2026-01-15', note: 'Initial deposit' }] },
         { id: 'g2', name: 'Vacation Fund', targetAmount: 50000, currentAmount: 12500, startDate: '2026-01-01', targetDate: '2026-08-01', notes: 'Boracay trip', color: '#185FA5', contributions: [{ id: 'gc2', amount: 12500, date: '2026-02-01', note: 'Monthly kurot' }] },
       ],
       debts: [
@@ -282,8 +282,8 @@ export const useKurotStore = create<KurotState>()(
 )
 
 export const CAT_COLORS: Record<string, string> = {
-  Housing: '#185FA5', Food: '#1a5c38', Transport: '#854F0B',
-  Health: '#993556', Savings: '#0F6E56', Entertainment: '#993C1D',
+  Housing: '#185FA5', Food: '#1a6127', Transport: '#854F0B',
+  Health: '#993556', Savings: '#1d9c33', Entertainment: '#993C1D',
   Utilities: '#534AB7', Other: '#5F5E5A',
 }
 

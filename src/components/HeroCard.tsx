@@ -7,7 +7,7 @@ interface HeroCardProps {
 
 export default function HeroCard({ eyebrow, title, subtitle, children }: HeroCardProps) {
   return (
-    <div className="bg-green-800 rounded-[28px] p-5 relative overflow-hidden mb-0">
+    <div className="bg-green-800 rounded-[28px] p-5 relative overflow-hidden mb-0 lg:hidden">
       <div className="absolute -top-8 -right-8 w-36 h-36 bg-white/[0.04] rounded-full pointer-events-none" />
       <div className="absolute -bottom-10 -left-4 w-24 h-24 bg-white/[0.03] rounded-full pointer-events-none" />
       <div className="relative z-10">

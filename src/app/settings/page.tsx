@@ -225,7 +225,7 @@ export default function SettingsPage() {
             <div className="w-12 h-12 rounded-2xl bg-green-800 flex items-center justify-center flex-shrink-0">
               <svg width="28" height="28" viewBox="0 0 512 512">
                 <circle cx="256" cy="256" r="210" fill="#f4c842" opacity="0.9" />
-                <text x="256" y="272" textAnchor="middle" fontFamily="Georgia,serif" fontSize="200" fontWeight="700" fill="#1a5c38">₱</text>
+                <text x="256" y="272" textAnchor="middle" fontFamily="Georgia,serif" fontSize="200" fontWeight="700" fill="#1a6127">₱</text>
               </svg>
             </div>
             <div>

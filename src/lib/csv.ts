@@ -376,7 +376,7 @@ export function parseImportCSV(
       startDate:     startDate || today(),
       targetDate:    targetDate || today(),
       notes:         notes || '',
-      color:         '#1a5c38',
+      color:         '#1a6127',
       contributions: [],
     }
     counts.goals++

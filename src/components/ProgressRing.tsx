@@ -11,8 +11,8 @@ export default function ProgressRing({
   pct,
   size = 56,
   stroke = 5,
-  color = '#1a5c38',
-  bg = '#eaf3de',
+  color = '#1a6127',
+  bg = '#ddfbe1',
   children,
 }: ProgressRingProps) {
   const r = (size - stroke) / 2

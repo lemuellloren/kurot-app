@@ -9,20 +9,20 @@
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 1500,
-      "backgroundColor": "#1a5c38",
+      "backgroundColor": "#1a6127",
       "showSpinner": false
     },
     "StatusBar": {
       "style": "DARK",
-      "backgroundColor": "#1a5c38"
+      "backgroundColor": "#1a6127"
     }
   },
   "android": {
     "allowMixedContent": true,
-    "backgroundColor": "#1a5c38"
+    "backgroundColor": "#1a6127"
   },
   "ios": {
     "contentInset": "automatic",
-    "backgroundColor": "#1a5c38"
+    "backgroundColor": "#1a6127"
   }
 }
