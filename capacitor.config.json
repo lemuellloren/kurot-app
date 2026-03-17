@@ -1,0 +1,28 @@
+{
+  "appId": "com.kurot.budget",
+  "appName": "Kurot",
+  "webDir": "out",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#1a5c38",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#1a5c38"
+    }
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#1a5c38"
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#1a5c38"
+  }
+}

@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #1a5c38;
+  --gold: #e8b420;
+  --mint: #4ade80;
+}
+
+* { -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  background: #1a5c38;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  overscroll-behavior: none;
+}
+
+body { display: flex; justify-content: center; }
+
+.font-serif { font-family: 'Playfair Display', Georgia, serif; }
+
+@layer components {
+  .card {
+    @apply bg-white rounded-3xl shadow-card border border-transparent;
+  }
+  .card-pressed {
+    @apply active:scale-[0.98] transition-transform duration-100;
+  }
+  .btn-primary {
+    @apply bg-green-800 text-white font-bold rounded-2xl px-5 py-3 text-sm active:opacity-80 transition-opacity;
+  }
+  .btn-secondary {
+    @apply bg-green-100 text-green-800 font-bold rounded-2xl px-5 py-3 text-sm active:opacity-80 transition-opacity;
+  }
+  .btn-ghost {
+    @apply text-green-800 font-semibold text-sm active:opacity-60 transition-opacity;
+  }
+  .input {
+    @apply w-full h-11 text-sm border border-green-800/20 rounded-xl px-3 bg-green-50 text-green-900 focus:outline-none focus:border-green-700 font-sans;
+  }
+  .label {
+    @apply text-xs font-semibold text-green-700/70 uppercase tracking-wide mb-1.5 block;
+  }
+  .pill {
+    @apply text-xs font-bold px-3 py-1 rounded-full;
+  }
+  .pill-ok   { @apply bg-green-800/20 text-green-200; }
+  .pill-warn { background: rgba(232,180,32,0.2); color: #fde68a; }
+  .pill-over { @apply bg-red-400/20 text-red-200; }
+
+  .section-title {
+    @apply text-xs font-bold text-green-700/60 uppercase tracking-widest;
+  }
+  .nav-tab {
+    @apply flex flex-col items-center gap-0.5 py-1.5 px-2 text-[10px] font-bold uppercase tracking-wide text-green-700/40 transition-colors duration-150 flex-1;
+  }
+  .nav-tab.active { @apply text-green-800; }
+}
+
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
