@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useKurotStore, CATEGORIES, CAT_ICONS } from '@/store';
 import { formatCurrency } from '@/lib/utils';
 import dynamic from 'next/dynamic';
-import AppShell from '@/components/AppShell';
 import HeroCard from '@/components/HeroCard';
 import Modal from '@/components/Modal';
 import { Plus, Trash2, RefreshCw, Bell, BellOff, User } from 'lucide-react';
@@ -62,7 +61,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <AppShell>
+    <>
       <div className='p-3.5 space-y-3'>
         <HeroCard eyebrow='Settings' title='Customize Kurot' />
 
@@ -154,8 +153,8 @@ export default function SettingsPage() {
         {tab === 'budgets' && (
           <div className='space-y-2'>
             <p className='text-xs text-green-700/50 px-1 leading-relaxed'>
-              Set a spending limit per category. You&apos;ll get a smart nudge
-              when you&apos;re getting close.
+              Set a spending limit per category. You'll get a smart nudge when
+              you're getting close.
             </p>
             {CATEGORIES.map((cat) => (
               <CategoryBudgetRow
@@ -266,7 +265,7 @@ export default function SettingsPage() {
                 <Bell size={28} className='text-green-700/20 mx-auto mb-2' />
                 <p className='text-sm text-green-700/50'>No nudges right now</p>
                 <p className='text-xs text-green-700/35 mt-1'>
-                  You&apos;re all caught up!
+                  You're all caught up!
                 </p>
               </div>
             ) : (
@@ -357,7 +356,7 @@ export default function SettingsPage() {
             stays on your device.
           </p>
           <p className='text-xs text-green-700/40 italic mt-2'>
-            &quot;Set aside a little for every need.&quot;
+            "Set aside a little for every need."
           </p>
         </div>
       </div>
@@ -365,7 +364,7 @@ export default function SettingsPage() {
       {showAddRecurring && (
         <AddRecurringModal onClose={() => setShowAddRecurring(false)} />
       )}
-    </AppShell>
+    </>
   );
 }
 
