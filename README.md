@@ -10,17 +10,17 @@ A full-featured personal finance app built with **Next.js 14**, **TypeScript**, 
 ### 💰 Envelope Budgeting
 - Create envelopes with budget limits per category
 - Log expenses per envelope with descriptions and dates
-- Progress bars, remaining amounts, over-budget alerts
+- Progress bars, remaining amounts, and over-budget alerts
 
 ### 📊 Spending Breakdown
 - Doughnut chart showing spending by envelope
 - Budget vs Spent bars per envelope
-- Monthly income summary
+- Monthly income and savings rate summary
 
 ### 🎯 Goals & Planning
 - Create savings goals with targets, dates, and notes
 - Track contributions with amounts and notes
-- Progress tracking with schedule comparison
+- Animated progress rings with schedule comparison
 - Smart nudges when goals fall behind
 
 ### 🔁 Budgets & Recurring
@@ -30,21 +30,30 @@ A full-featured personal finance app built with **Next.js 14**, **TypeScript**, 
 - Due-date alerts for upcoming recurring items
 
 ### 💳 Debt & Receivables
-- Track money you owe (debts)
-- Track money owed to you (receivables)
-- Record payments and collections with notes
-- Due date warnings, overdue flags, progress bars
+- Track money you owe (debts) and money owed to you (receivables)
+- Record payments and collections with notes and dates
+- Due date warnings, overdue flags, animated progress rings
 
 ### 🔔 Smart Nudges
 - Budget tight alerts (configurable threshold per category)
 - Goal behind schedule alerts
 - Debt due soon warnings
 - Recurring entry due reminders
-- All dismissable, auto-generated
+- All dismissable and auto-generated
 
 ### 👋 Personalized Greeting
-- Time-aware greeting (Good morning/afternoon/evening)
+- Time-aware greeting (Good morning / afternoon / evening)
 - First-name personalization via Settings
+
+### 📤 Export & Import (CSV)
+- **Export** any section or a full backup as a `.csv` file
+  - Full Backup — everything in one file (recommended)
+  - Transactions, Envelopes, Goals, Debt & Receivables, Recurring — individually
+- **Import** from any Kurot backup CSV
+  - **Merge mode** — adds imported data alongside existing data, skips duplicates
+  - **Replace mode** — overwrites all data with the imported file (with confirmation)
+- UTF-8 with BOM for Excel compatibility
+- Works as a full device-to-device migration tool
 
 ---
 
@@ -88,19 +97,42 @@ npm run build
 ```
 src/
 ├── app/
-│   ├── page.tsx          # Home — Envelopes & Budget
-│   ├── breakdown/        # Spending charts
-│   ├── goals/            # Goals & planning
-│   ├── debt/             # Debt & receivables
-│   ├── history/          # Monthly snapshots
-│   ├── settings/         # Profile, budgets, recurring, nudges
-│   ├── layout.tsx        # Root layout
-│   └── globals.css       # Global styles + Tailwind
+│   ├── page.tsx            # Home — Envelopes & Budget
+│   ├── breakdown/          # Spending charts
+│   ├── goals/              # Goals & planning
+│   ├── debt/               # Debt & receivables
+│   ├── history/            # Monthly snapshots
+│   ├── settings/           # Profile, budgets, recurring, nudges, data portability
+│   ├── layout.tsx          # Root layout
+│   ├── not-found.tsx       # 404 page
+│   └── globals.css         # Global styles + Tailwind
 ├── components/
-│   └── AppShell.tsx      # Status bar + bottom nav wrapper
+│   ├── AppShell.tsx        # Status bar + bottom nav wrapper
+│   ├── DataPortability.tsx # Export & Import CSV UI
+│   ├── HeroCard.tsx        # Shared dark green hero header
+│   ├── Modal.tsx           # Reusable bottom-sheet modal
+│   └── ProgressRing.tsx    # Animated SVG progress ring
+├── hooks/
+│   └── index.ts            # useLocalStorage, useDebounce, useGreeting, useClock
+├── lib/
+│   ├── csv.ts              # CSV export/import logic (zero dependencies)
+│   └── utils.ts            # formatCurrency, pctOf, daysUntil, formatDate, getGreeting
 └── store/
-    └── index.ts          # Zustand store with all state & actions
+    └── index.ts            # Zustand store — all state, actions, and nudge generation
 ```
+
+---
+
+## Data Backup & Migration
+
+All data lives in `localStorage` under the key `kurot_v2`. To move data between devices or keep a backup:
+
+1. Go to **Settings → Export & Import Data**
+2. Tap **Full Backup** to download `kurot-backup-YYYY-MM-DD.csv`
+3. On the new device, tap **Choose CSV file to import** and select the backup
+4. Choose **Merge** to add data alongside existing entries, or **Replace** to overwrite everything
+
+The CSV format uses `## SECTION_NAME` headers so it's human-readable and editable in Excel or Google Sheets.
 
 ---
 
@@ -116,24 +148,36 @@ npx cap add ios       # then: npx cap open ios (Mac only)
 
 ---
 
+## Known Issues & Fixes
+
+### Hydration mismatch
+Next.js SSR renders pages on the server before the browser loads. Any code that reads `new Date()` or browser APIs (`localStorage`, `FileReader`, `URL`) directly during render will cause a hydration mismatch. Fixed by:
+- `DataPortability` — loaded with `dynamic(..., { ssr: false })` since it uses `FileReader` and `URL.createObjectURL`
+- Clock display in `AppShell` — initialized as `''` and set in `useEffect`, with `suppressHydrationWarning`
+- Greeting and month in home page — set in `useEffect` after mount, with `suppressHydrationWarning`
+
+---
+
 ## Brand
 
 | Color | Hex | Use |
 |-------|-----|-----|
-| Forest Green | `#1a5c38` | Primary brand |
-| Deep Green | `#0a2918` | Dark elements |
-| Leaf Green | `#1f7044` | Success, progress |
+| Forest Green | `#1a5c38` | Primary brand, headers, buttons |
+| Deep Green | `#0a2918` | Dark backgrounds, toasts |
+| Leaf Green | `#1f7044` | Success states, progress bars |
 | Mint | `#4ade80` | Accents, highlights |
-| Gold | `#e8b420` | Coin icon, alerts |
+| Gold | `#e8b420` | Coin icon, warning accents |
 
 Font pairing: **Playfair Display** (headings) + **Plus Jakarta Sans** (body)
 
 ---
 
-## Data
+## About the Name
 
-All data is stored in `localStorage` under the key `kurot_v2`. No accounts, no servers, no tracking. Your data stays on your device.
+> **Kurot** is inspired by the traditional Filipino budgeting habit of *magkurot ng pera* — the practice of pinching off small portions of money and setting them aside for specific needs. The app brings this cultural wisdom into the digital age through a smart envelope budgeting system, helping users everywhere allocate, track, and manage their money more intentionally.
+
+*"Set aside a little for every need."*
 
 ---
 
-*Kurot v1.0 — Inspired by the Filipino tradition of magkurot ng pera 🇵🇭*
+*Kurot v1.1 — Inspired by the Filipino tradition of magkurot ng pera 🇵🇭*

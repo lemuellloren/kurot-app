@@ -2,10 +2,21 @@
 import { useState } from 'react'
 import { useKurotStore, CATEGORIES, CAT_ICONS } from '@/store'
 import { formatCurrency } from '@/lib/utils'
+import dynamic from 'next/dynamic'
 import AppShell from '@/components/AppShell'
 import HeroCard from '@/components/HeroCard'
 import Modal from '@/components/Modal'
 import { Plus, Trash2, RefreshCw, Bell, BellOff, User } from 'lucide-react'
+
+const DataPortability = dynamic(() => import('@/components/DataPortability'), {
+  ssr: false,
+  loading: () => (
+    <div className="card p-4 animate-pulse">
+      <div className="h-4 bg-green-100 rounded w-1/2 mb-2" />
+      <div className="h-3 bg-green-50 rounded w-3/4" />
+    </div>
+  ),
+})
 import clsx from 'clsx'
 
 type Tab = 'profile' | 'budgets' | 'recurring' | 'nudges'
@@ -204,6 +215,9 @@ export default function SettingsPage() {
             )}
           </div>
         )}
+
+        {/* Data portability — always visible regardless of tab */}
+        <DataPortability />
 
         {/* About section always shown at bottom */}
         <div className="card p-4 mt-2">

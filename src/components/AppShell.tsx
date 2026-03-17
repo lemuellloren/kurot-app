@@ -31,11 +31,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return () => clearInterval(t)
   }, [])
 
+  // Suppress hydration mismatch for the clock span
   return (
     <div className="w-full max-w-[430px] min-h-dvh bg-green-50 flex flex-col relative">
       {/* Status bar */}
       <div className="bg-green-800 px-5 pt-3.5 pb-2.5 flex justify-between items-center flex-shrink-0">
-        <span className="text-white/70 text-xs font-semibold tabular-nums">{time}</span>
+        <span className="text-white/70 text-xs font-semibold tabular-nums" suppressHydrationWarning>{time}</span>
         <div className="flex items-center gap-2">
           <KurotCoinIcon />
           <span className="font-serif text-[17px] text-white tracking-tight leading-none">Kurot</span>

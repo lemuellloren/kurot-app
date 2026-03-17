@@ -23,8 +23,17 @@ export default function Home() {
   const allocPct = pctOf(totalBudget, income)
   const unread = nudges.filter(n => !n.read)
 
-  const now = new Date()
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+  const [greeting, setGreeting] = useState('')
+  const [currentMonth, setCurrentMonth] = useState('')
+
+  useEffect(() => {
+    const h = new Date().getHours()
+    const timeOfDay = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'
+    setGreeting(userName ? `${timeOfDay}, ${userName}` : timeOfDay)
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    const now = new Date()
+    setCurrentMonth(`${months[now.getMonth()]} ${now.getFullYear()}`)
+  }, [userName])
 
   const statusLabel = totalSpent > totalBudget ? 'Over Budget!' : totalSpent / (totalBudget || 1) > 0.8 ? 'Watch Spending' : 'On Track'
   const statusCls   = totalSpent > totalBudget ? 'pill-over'    : totalSpent / (totalBudget || 1) > 0.8 ? 'pill-warn'       : 'pill-ok'
@@ -54,11 +63,11 @@ export default function Home() {
           <div className="absolute -bottom-10 -left-4 w-24 h-24 bg-white/[0.03] rounded-full pointer-events-none" />
           <div className="absolute top-1/2 right-5 -translate-y-1/2 w-14 h-14 rounded-full pointer-events-none" style={{ background: 'rgba(232,180,32,0.1)' }} />
           <div className="relative z-10">
-            <p className="text-white/50 text-[11px] tracking-widest uppercase mb-1">
-              {months[now.getMonth()]} {now.getFullYear()}
+            <p className="text-white/50 text-[11px] tracking-widest uppercase mb-1" suppressHydrationWarning>
+              {currentMonth}
             </p>
-            <p className="text-white/70 text-sm font-medium mb-1">
-              {getGreeting(userName || undefined)} 👋
+            <p className="text-white/70 text-sm font-medium mb-1" suppressHydrationWarning>
+              {greeting} 👋
             </p>
             <p className="font-serif text-[36px] text-white leading-none tracking-tight">{fp(income)}</p>
             <p className="text-white/40 text-xs mt-2 italic">set aside a little for every need</p>
