@@ -51,11 +51,11 @@ export default function Home() {
 
         {/* ── DESKTOP: Hero row ── */}
         <div className="hidden lg:block">
-          {/* Nudge bar */}
+        {/* Nudge bar — mobile only, desktop handled by AppShell bell */}
           {unread.length > 0 && (
             <button
               onClick={() => setShowNudges(true)}
-              className="w-full flex items-center gap-2 rounded-2xl px-4 py-2.5 text-left border mb-4"
+              className="lg:hidden w-full flex items-center gap-2 rounded-2xl px-4 py-2.5 text-left border mb-4"
               style={{ background: 'rgba(232,180,32,0.10)', borderColor: 'rgba(232,180,32,0.25)' }}
             >
               <Bell size={14} className="text-yellow-700 flex-shrink-0" />
