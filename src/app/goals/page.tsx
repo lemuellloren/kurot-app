@@ -9,7 +9,7 @@ import ProgressRing from '@/components/ProgressRing'
 import { Plus, Trash2, PlusCircle, Target } from 'lucide-react'
 import clsx from 'clsx'
 
-const GOAL_COLORS = ['#1a5c38','#185FA5','#854F0B','#993556','#534AB7','#993C1D']
+const GOAL_COLORS = ['#1a6127','#185FA5','#854F0B','#993556','#534AB7','#993C1D']
 
 export default function GoalsPage() {
   const store = useKurotStore()
@@ -52,7 +52,7 @@ export default function GoalsPage() {
             <div className="card p-8 text-center">
               <Target size={32} className="text-green-700/20 mx-auto mb-2" />
               <p className="text-sm text-green-700/50">No active goals yet</p>
-              <p className="text-xs text-green-700/35 mt-1">Tap "New Goal" to start saving</p>
+              <p className="text-xs text-green-700/35 mt-1">Tap &ldquo;New Goal&rdquo; to start saving</p>
             </div>
           )
           : active.map(g => (
@@ -88,7 +88,7 @@ function GoalCard({ goal: g, fp, onContribute, onDelete, completed = false }: an
     <div className="card overflow-hidden">
       <div className="p-4 cursor-pointer select-none" onClick={() => setExpanded(v => !v)}>
         <div className="flex items-start gap-3 mb-3">
-          <ProgressRing pct={pct} size={52} stroke={5} color={g.color} bg="#eaf3de">
+          <ProgressRing pct={pct} size={52} stroke={5} color={g.color} bg="#ddfbe1">
             <span className="text-[10px] font-bold text-green-800">{pct}%</span>
           </ProgressRing>
           <div className="flex-1 min-w-0">

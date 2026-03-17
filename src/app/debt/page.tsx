@@ -103,13 +103,13 @@ function DebtCard({ debt: d, fp, onPay, onDelete, settled = false }: any) {
   const pct      = pctOf(d.totalAmount - d.remainingAmount, d.totalAmount)
   const daysLeft = daysUntil(d.dueDate)
   const isOwe    = d.type === 'owe'
-  const color    = isOwe ? '#dc2626' : '#1a5c38'
+  const color    = isOwe ? '#dc2626' : '#1a6127'
 
   return (
     <div className="card overflow-hidden">
       <div className="p-4 cursor-pointer select-none" onClick={() => setExpanded(v => !v)}>
         <div className="flex items-start gap-3 mb-3">
-          <ProgressRing pct={pct} size={52} stroke={5} color={color} bg={isOwe ? '#fee2e2' : '#eaf3de'}>
+          <ProgressRing pct={pct} size={52} stroke={5} color={color} bg={isOwe ? '#fee2e2' : '#ddfbe1'}>
             <span className="text-[10px] font-bold" style={{ color }}>{pct}%</span>
           </ProgressRing>
           <div className="flex-1 min-w-0">
@@ -152,7 +152,7 @@ function DebtCard({ debt: d, fp, onPay, onDelete, settled = false }: any) {
             ))}
           </div>
 
-          {d.notes && <p className="text-xs text-green-700/55 italic">"{d.notes}"</p>}
+          {d.notes && <p className="text-xs text-green-700/55 italic">&ldquo;{d.notes}&rdquo;</p>}
 
           {d.payments.length > 0 && (
             <div>
