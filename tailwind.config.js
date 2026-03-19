@@ -1,12 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         // Apple green palette — replaces the old green ramp
         green: {
-          50:  '#f1fcf2',
+          50: '#f1fcf2',
           100: '#ddfbe1',
           200: '#bef4c6',
           300: '#8bea9a',
@@ -42,4 +43,4 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};

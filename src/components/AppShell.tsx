@@ -89,7 +89,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className='flex min-h-dvh w-full bg-green-50'>
       {/* ── DESKTOP SIDEBAR ── */}
-      <aside className='hidden lg:flex flex-col w-64 xl:w-72 bg-green-800 flex-shrink-0 fixed left-0 top-0 bottom-0 z-40'>
+      <aside
+        className='hidden lg:flex flex-col w-64 xl:w-72 flex-shrink-0 fixed left-0 top-0 bottom-0 z-40 transition-colors duration-200'
+        style={{ background: 'var(--bg-sidebar)' }}
+      >
         {/* Logo */}
         <div className='px-6 pt-7 pb-5 flex items-center gap-3 border-b border-white/10'>
           <KurotCoinIcon size={36} />
@@ -181,12 +184,24 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* ── DESKTOP MAIN ── */}
       <div className='hidden lg:flex flex-col flex-1 ml-64 xl:ml-72 min-w-0'>
         {/* Top bar */}
-        <header className='sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-green-800/10 px-8 py-3.5 flex justify-between items-center flex-shrink-0'>
+        <header
+          className='sticky top-0 z-30 backdrop-blur-md border-b px-8 py-3.5 flex justify-between items-center flex-shrink-0 transition-colors duration-200'
+          style={{
+            background: 'var(--bg-header)',
+            borderColor: 'var(--border-default)',
+          }}
+        >
           <div>
-            <h1 className='font-serif text-xl text-green-900 leading-tight'>
+            <h1
+              className='font-serif text-xl leading-tight'
+              style={{ color: 'var(--text-primary)' }}
+            >
               {currentNav?.label ?? 'Kurot'}
             </h1>
-            <p className='text-xs text-green-700/50 mt-0.5'>
+            <p
+              className='text-xs mt-0.5'
+              style={{ color: 'var(--text-muted)' }}
+            >
               {currentNav?.desc}
             </p>
           </div>
@@ -219,12 +234,28 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
               {/* Nudge dropdown panel */}
               {nudgeOpen && (
-                <div className='absolute right-0 top-11 w-80 bg-white rounded-2xl shadow-card-lg border border-green-800/10 overflow-hidden z-50'>
+                <div
+                  className='absolute right-0 top-11 w-80 rounded-2xl border overflow-hidden z-50'
+                  style={{
+                    background: 'var(--bg-card)',
+                    borderColor: 'var(--border-default)',
+                    boxShadow: 'var(--shadow-card-lg)',
+                  }}
+                >
                   {/* Panel header */}
-                  <div className='flex justify-between items-center px-4 py-3 border-b border-green-800/8'>
+                  <div
+                    className='flex justify-between items-center px-4 py-3 border-b'
+                    style={{ borderColor: 'var(--border-default)' }}
+                  >
                     <div className='flex items-center gap-2'>
-                      <Bell size={14} className='text-green-700' />
-                      <p className='text-sm font-bold text-green-900'>
+                      <Bell
+                        size={14}
+                        style={{ color: 'var(--text-secondary)' }}
+                      />
+                      <p
+                        className='text-sm font-bold'
+                        style={{ color: 'var(--text-primary)' }}
+                      >
                         Smart Nudges
                       </p>
                       {unread.length > 0 && (
@@ -300,7 +331,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   </div>
 
                   {/* Footer */}
-                  <div className='px-4 py-2.5 border-t border-green-800/8 bg-green-50/50'>
+                  <div
+                    className='px-4 py-2.5 border-t'
+                    style={{
+                      borderColor: 'var(--border-default)',
+                      background: 'var(--bg-input)',
+                    }}
+                  >
                     <Link
                       href='/settings'
                       onClick={() => setNudgeOpen(false)}
@@ -331,7 +368,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* ── MOBILE LAYOUT ── */}
       <div className='flex lg:hidden flex-col w-full min-h-dvh'>
         {/* Mobile status bar */}
-        <div className='bg-green-800 px-5 pt-3.5 pb-2.5 flex justify-between items-center flex-shrink-0'>
+        <div
+          className='px-5 pt-3.5 pb-2.5 flex justify-between items-center flex-shrink-0 transition-colors duration-200'
+          style={{ background: 'var(--bg-sidebar)' }}
+        >
           <span
             className='text-white/70 text-xs font-semibold tabular-nums'
             suppressHydrationWarning
@@ -367,8 +407,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Mobile bottom nav */}
         <nav
-          className='fixed bottom-0 left-0 right-0 bg-white border-t border-green-800/10 flex z-50'
-          style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
+          className='fixed bottom-0 left-0 right-0 flex z-50 border-t transition-colors duration-200'
+          style={{
+            background: 'var(--bg-card)',
+            borderColor: 'var(--border-default)',
+            paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
+          }}
         >
           {NAV.map(({ href, label, Icon }) => {
             const active = isActive(href);

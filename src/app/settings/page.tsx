@@ -29,6 +29,7 @@ export default function SettingsPage() {
     categoryBudgets,
     recurringEntries,
     nudges,
+    theme,
   } = store;
   const fp = (n: number) => formatCurrency(n, currency);
 
@@ -136,6 +137,35 @@ export default function SettingsPage() {
                   </option>
                 ))}
               </select>
+            </div>
+            <div>
+              <label className='label'>Appearance</label>
+              <div className='grid grid-cols-3 gap-2'>
+                {(
+                  [
+                    { key: 'light', label: 'Light', icon: '☀️' },
+                    { key: 'dark', label: 'Dark', icon: '🌙' },
+                    { key: 'system', label: 'System', icon: '💻' },
+                  ] as const
+                ).map((opt) => (
+                  <button
+                    key={opt.key}
+                    onClick={() => store.setTheme(opt.key)}
+                    className={clsx(
+                      'flex flex-col items-center gap-1.5 py-3 rounded-2xl border text-xs font-bold transition-all',
+                      theme === opt.key
+                        ? 'text-white border-transparent'
+                        : 'border-green-800/20 text-green-700/70 hover:border-green-800/40',
+                    )}
+                    style={
+                      theme === opt.key ? { background: 'var(--brand)' } : {}
+                    }
+                  >
+                    <span className='text-xl'>{opt.icon}</span>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
             </div>
             <button
               onClick={handleSave}

@@ -3,63 +3,158 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Light mode tokens ── */
 :root {
   --brand: #1a6127;
-  --gold:  #e8b420;
-  --mint:  #51d768;
+  --gold: #e8b420;
+  --mint: #51d768;
+
+  --bg-body: #1a6127;
+  --bg-page: #f1fcf2;
+  --bg-card: #ffffff;
+  --bg-input: #f1fcf2;
+  --bg-sidebar: #1a6127;
+  --bg-header: rgba(255, 255, 255, 0.9);
+
+  --text-primary: #0c1f12;
+  --text-secondary: #3d5c47;
+  --text-muted: #7a9e84;
+  --text-on-brand: #ffffff;
+
+  --border-default: rgba(26, 97, 39, 0.12);
+  --border-strong: rgba(26, 97, 39, 0.22);
+
+  --shadow-card: 0 2px 12px rgba(26, 97, 39, 0.09);
+  --shadow-card-lg: 0 4px 20px rgba(26, 97, 39, 0.13);
+
+  --status-success-bg: #ddfbe1;
+  --status-success-text: #175023;
+  --status-warning-bg: rgba(232, 180, 32, 0.15);
+  --status-warning-text: #7a4f00;
+  --status-danger-bg: #fee2e2;
+  --status-danger-text: #991b1b;
+  --status-info-bg: #e0f2fe;
+  --status-info-text: #0c4a6e;
 }
 
-* { -webkit-tap-highlight-color: transparent; }
+/* ── Dark mode tokens ── */
+.dark {
+  --brand: #51d768;
+  --gold: #f4c842;
+  --mint: #51d768;
 
-html, body {
+  --bg-body: #000000;
+  --bg-page: #0a0a0a;
+  --bg-card: #111111;
+  --bg-input: #1a1a1a;
+  --bg-sidebar: #000000;
+  --bg-header: rgba(10, 10, 10, 0.95);
+
+  --text-primary: #f5f5f5;
+  --text-secondary: #a3a3a3;
+  --text-muted: #525252;
+  --text-on-brand: #ffffff;
+
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.6);
+  --shadow-card-lg: 0 4px 24px rgba(0, 0, 0, 0.7);
+
+  --status-success-bg: rgba(81, 215, 104, 0.12);
+  --status-success-text: #86efac;
+  --status-warning-bg: rgba(232, 180, 32, 0.12);
+  --status-warning-text: #fde68a;
+  --status-danger-bg: rgba(239, 68, 68, 0.12);
+  --status-danger-text: #fca5a5;
+  --status-info-bg: rgba(14, 165, 233, 0.12);
+  --status-info-text: #7dd3fc;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
   height: 100%;
-  background: #1a6127;
+  background: var(--bg-body);
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   overscroll-behavior: none;
+  transition: background 0.2s ease;
 }
 
-body { display: block; }
-
-.font-serif { font-family: 'Playfair Display', Georgia, serif; }
+body {
+  display: block;
+}
+.font-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+}
 
 @layer components {
   .card {
-    @apply bg-white rounded-3xl shadow-card border border-transparent;
+    background: var(--bg-card);
+    border-color: var(--border-default);
+    @apply rounded-3xl border;
+    box-shadow: var(--shadow-card);
   }
   .card-pressed {
     @apply active:scale-[0.98] transition-transform duration-100;
   }
   .btn-primary {
-    @apply bg-green-800 text-white font-bold rounded-2xl px-5 py-3 text-sm active:opacity-80 transition-opacity;
+    background: var(--brand);
+    @apply text-white font-bold rounded-2xl px-5 py-3 text-sm active:opacity-80 transition-opacity;
   }
   .btn-secondary {
-    @apply bg-green-100 text-green-800 font-bold rounded-2xl px-5 py-3 text-sm active:opacity-80 transition-opacity;
+    background: var(--status-success-bg);
+    color: var(--brand);
+    @apply font-bold rounded-2xl px-5 py-3 text-sm active:opacity-80 transition-opacity;
   }
   .btn-ghost {
-    @apply text-green-800 font-semibold text-sm active:opacity-60 transition-opacity;
+    color: var(--brand);
+    @apply font-semibold text-sm active:opacity-60 transition-opacity;
   }
   .input {
-    @apply w-full h-11 text-sm border border-green-800/20 rounded-xl px-3 bg-green-50 text-green-900 focus:outline-none focus:border-green-700 font-sans;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+    @apply w-full h-11 text-sm border rounded-xl px-3 focus:outline-none font-sans;
+  }
+  .input:focus {
+    border-color: var(--brand);
   }
   .label {
-    @apply text-xs font-semibold text-green-700/70 uppercase tracking-wide mb-1.5 block;
+    color: var(--text-muted);
+    @apply text-xs font-semibold uppercase tracking-wide mb-1.5 block;
   }
   .pill {
     @apply text-xs font-bold px-3 py-1 rounded-full;
   }
-  .pill-ok   { @apply bg-green-800/20 text-green-200; }
-  .pill-warn { background: rgba(232,180,32,0.2); color: #fde68a; }
-  .pill-over { @apply bg-red-400/20 text-red-200; }
+  .pill-ok {
+    background: rgba(26, 97, 39, 0.25);
+    color: #8bea9a;
+  }
+  .pill-warn {
+    background: rgba(232, 180, 32, 0.2);
+    color: #fde68a;
+  }
+  .pill-over {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+  }
 
   .section-title {
-    @apply text-xs font-bold text-green-700/60 uppercase tracking-widest;
+    color: var(--text-muted);
+    @apply text-xs font-bold uppercase tracking-widest;
   }
   .nav-tab {
-    @apply flex flex-col items-center gap-0.5 py-1.5 px-2 text-[10px] font-bold uppercase tracking-wide text-green-700/40 transition-colors duration-150 flex-1;
+    @apply flex flex-col items-center gap-0.5 py-1.5 px-2 text-[10px] font-bold uppercase tracking-wide transition-colors duration-150 flex-1;
+    color: var(--text-muted);
   }
-  .nav-tab.active { @apply text-green-800; }
+  .nav-tab.active {
+    color: var(--brand);
+  }
 
-  /* Desktop card grids */
   .desktop-grid-2 {
     @apply grid grid-cols-1 lg:grid-cols-2 gap-4;
   }
@@ -71,23 +166,214 @@ body { display: block; }
   }
 }
 
-/* Hide scrollbars */
-::-webkit-scrollbar { display: none; }
-* { scrollbar-width: none; }
+/* Scrollbars */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none;
+}
 
-/* Desktop hover states */
+/* Desktop hover */
 @media (min-width: 1024px) {
   .card {
-    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    transition:
+      box-shadow 0.15s ease,
+      border-color 0.15s ease;
   }
   .card:hover {
-    box-shadow: 0 4px 20px rgba(26,97,39,0.13);
+    box-shadow: var(--shadow-card-lg);
   }
 }
 
-/* Hide mobile hero cards on desktop since AppShell top bar provides context */
+/* Desktop hero hide */
 @media (min-width: 1024px) {
   .mobile-hero-only {
     display: none;
   }
+}
+
+/* Dark mode Tailwind overrides */
+.dark .bg-white {
+  background: var(--bg-card) !important;
+}
+.dark .bg-green-50 {
+  background: var(--bg-page) !important;
+}
+.dark .bg-green-100 {
+  background: rgba(81, 215, 104, 0.15) !important;
+}
+.dark .bg-green-800 {
+  background: #0a1a0d !important;
+}
+.dark .text-green-900 {
+  color: var(--text-primary) !important;
+}
+.dark .text-green-800 {
+  color: var(--brand) !important;
+}
+.dark .text-green-700 {
+  color: var(--text-secondary) !important;
+}
+.dark .text-green-700\/50 {
+  color: var(--text-muted) !important;
+}
+.dark .text-green-700\/40 {
+  color: var(--text-muted) !important;
+}
+.dark .text-green-700\/60 {
+  color: var(--text-secondary) !important;
+}
+.dark .border-green-800\/10 {
+  border-color: var(--border-default) !important;
+}
+.dark .border-green-800\/20 {
+  border-color: var(--border-strong) !important;
+}
+.dark select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+/* ── Comprehensive dark mode overrides ── */
+.dark {
+  color-scheme: dark;
+}
+
+/* Page background */
+.dark .bg-green-50 {
+  background-color: #0a0a0a !important;
+}
+.dark .bg-green-100 {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+.dark .bg-white {
+  background-color: #111111 !important;
+}
+.dark .bg-green-800 {
+  background-color: #000000 !important;
+}
+.dark .bg-green-50\/50,
+.dark .bg-green-50\/60 {
+  background-color: rgba(20, 20, 20, 0.6) !important;
+}
+
+/* Text colors */
+.dark .text-green-900 {
+  color: #f5f5f5 !important;
+}
+.dark .text-green-800 {
+  color: #51d768 !important;
+}
+.dark .text-green-700 {
+  color: #a3a3a3 !important;
+}
+.dark [class*='text-green-700\/'] {
+  color: #525252 !important;
+}
+.dark .text-red-600 {
+  color: #fca5a5 !important;
+}
+.dark .text-red-400 {
+  color: #f87171 !important;
+}
+.dark .text-amber-600 {
+  color: #fde68a !important;
+}
+
+/* Borders */
+.dark [class*='border-green-800\/'] {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+.dark .border-green-200 {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+.dark .border-red-200 {
+  border-color: rgba(239, 68, 68, 0.25) !important;
+}
+.dark .border-amber-200 {
+  border-color: rgba(232, 180, 32, 0.25) !important;
+}
+
+/* Inputs & selects */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #1a1a1a !important;
+  color: #f5f5f5 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+.dark input::placeholder {
+  color: #525252 !important;
+}
+.dark select option {
+  background: #111111;
+  color: #f5f5f5;
+}
+
+/* Cards */
+.dark .rounded-3xl.border,
+.dark .rounded-2xl.border,
+.dark .rounded-xl.border {
+  background-color: #111111 !important;
+}
+
+/* Hero cards — keep them very dark but not pure black */
+.dark .bg-green-800.rounded-\[28px\] {
+  background-color: #0d0d0d !important;
+}
+
+/* Status backgrounds */
+.dark .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+.dark .bg-amber-50 {
+  background-color: rgba(232, 180, 32, 0.08) !important;
+}
+.dark .bg-blue-50 {
+  background-color: rgba(14, 165, 233, 0.08) !important;
+}
+.dark .bg-green-50.border {
+  background-color: rgba(81, 215, 104, 0.08) !important;
+}
+.dark .bg-yellow-50 {
+  background-color: rgba(232, 180, 32, 0.1) !important;
+}
+
+/* Progress track */
+.dark .bg-green-100.rounded-full {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Bottom sheet modal */
+.dark .rounded-t-\[28px\] {
+  background-color: #111111 !important;
+}
+.dark .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+.dark .bg-white\/20 {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Scrollable page area */
+.dark .flex-1.overflow-y-auto {
+  background-color: #0a0a0a;
+}
+
+/* Smooth theme transition */
+*,
+*::before,
+*::after {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.15s ease;
+}
+/* But not for animations/transforms */
+.progress-bar,
+[class*='rounded-full'] {
+  transition:
+    width 0.4s ease,
+    background-color 0.2s ease !important;
 }

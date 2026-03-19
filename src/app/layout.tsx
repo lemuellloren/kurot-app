@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import AppShell from '@/components/AppShell';
+import ThemeProvider from '@/components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Kurot — Smart Envelope Budgeting',
@@ -45,7 +46,9 @@ export default function RootLayout({
         <meta name='apple-mobile-web-app-title' content='Kurot' />
       </head>
       <body>
-        <AppShell>{children}</AppShell>
+        <ThemeProvider>
+          <AppShell>{children}</AppShell>
+        </ThemeProvider>
         <script
           dangerouslySetInnerHTML={{
             __html: `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(e){console.log('SW failed:',e)})})}`,
