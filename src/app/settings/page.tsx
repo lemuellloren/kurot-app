@@ -357,8 +357,8 @@ export default function SettingsPage() {
                   cx='256'
                   cy='256'
                   r='210'
-                  fill='#f4c842'
-                  opacity='0.9'
+                  fill='#40FFE1'
+                  opacity='0.92'
                 />
                 <text
                   x='256'
@@ -367,7 +367,7 @@ export default function SettingsPage() {
                   fontFamily='Georgia,serif'
                   fontSize='200'
                   fontWeight='700'
-                  fill='#1a6127'
+                  fill='#011412'
                 >
                   ₱
                 </text>

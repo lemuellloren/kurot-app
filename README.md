@@ -1,40 +1,47 @@
 # Kurot — Smart Envelope Budgeting
-### *Set aside a little for every need.*
 
-A full-featured personal finance app built with **Next.js 14**, **TypeScript**, **Tailwind CSS**, and **Zustand**. Offline-first with localStorage. Mobile-first UI, ready for Capacitor.
+### _Set aside a little for every need._
+
+A full-featured personal finance app built with **Next.js 15**, **TypeScript**, **Tailwind CSS**, and **Zustand**. Offline-first with localStorage. Mobile-first UI with responsive desktop layout, dark mode, and Capacitor-ready for iOS/Android.
 
 ---
 
 ## Features
 
 ### 💰 Envelope Budgeting
+
 - Create envelopes with budget limits per category
 - Log expenses per envelope with descriptions and dates
 - Progress bars, remaining amounts, and over-budget alerts
 
 ### 📊 Spending Breakdown
+
 - Doughnut chart showing spending by envelope
 - Budget vs Spent bars per envelope
 - Monthly income and savings rate summary
 
 ### 🎯 Goals & Planning
+
 - Create savings goals with targets, dates, and notes
 - Track contributions with amounts and notes
 - Animated progress rings with schedule comparison
 - Smart nudges when goals fall behind
 
 ### 🔁 Budgets & Recurring
+
 - Set category spending limits with custom alert thresholds
 - Create recurring income/expense entries (daily/weekly/monthly/yearly)
 - Toggle recurring entries on/off
 - Due-date alerts for upcoming recurring items
 
 ### 💳 Debt & Receivables
+
 - Track money you owe (debts) and money owed to you (receivables)
 - Record payments and collections with notes and dates
 - Due date warnings, overdue flags, animated progress rings
 
 ### 🔔 Smart Nudges
+
 - Budget tight alerts (configurable threshold per category)
 - Goal behind schedule alerts
 - Debt due soon warnings
@@ -42,10 +49,12 @@ A full-featured personal finance app built with **Next.js 14**, **TypeScript**, 
 - All dismissable and auto-generated
 
 ### 👋 Personalized Greeting
+
 - Time-aware greeting (Good morning / afternoon / evening)
 - First-name personalization via Settings
 
 ### 📤 Export & Import (CSV)
+
 - **Export** any section or a full backup as a `.csv` file
   - Full Backup — everything in one file (recommended)
   - Transactions, Envelopes, Goals, Debt & Receivables, Recurring — individually
@@ -59,32 +68,36 @@ A full-featured personal finance app built with **Next.js 14**, **TypeScript**, 
 
 ## Tech Stack
 
-| Tool | Purpose |
-|------|---------|
-| Next.js 14 | Framework (App Router, static export) |
-| TypeScript | Type safety throughout |
-| Tailwind CSS | Utility-first styling |
-| Zustand + persist | State management + localStorage |
-| Chart.js + react-chartjs-2 | Doughnut charts |
-| date-fns | Date calculations |
-| lucide-react | Icons |
-| Capacitor (optional) | Native iOS/Android wrapper |
+| Tool                       | Purpose                               |
+| -------------------------- | ------------------------------------- |
+| Next.js 14                 | Framework (App Router, static export) |
+| TypeScript                 | Type safety throughout                |
+| Tailwind CSS               | Utility-first styling                 |
+| Zustand + persist          | State management + localStorage       |
+| Chart.js + react-chartjs-2 | Doughnut charts                       |
+| date-fns                   | Date calculations                     |
+| lucide-react               | Icons                                 |
+| Capacitor (optional)       | Native iOS/Android wrapper            |
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 
 ### Install & Run
+
 ```bash
 npm install
 npm run dev
 ```
+
 Open http://localhost:3000
 
 ### Build for Production
+
 ```bash
 npm run build
 # Output in /out folder — ready for static hosting or Capacitor
@@ -151,7 +164,9 @@ npx cap add ios       # then: npx cap open ios (Mac only)
 ## Known Issues & Fixes
 
 ### Hydration mismatch
+
 Next.js SSR renders pages on the server before the browser loads. Any code that reads `new Date()` or browser APIs (`localStorage`, `FileReader`, `URL`) directly during render will cause a hydration mismatch. Fixed by:
+
 - `DataPortability` — loaded with `dynamic(..., { ssr: false })` since it uses `FileReader` and `URL.createObjectURL`
 - Clock display in `AppShell` — initialized as `''` and set in `useEffect`, with `suppressHydrationWarning`
 - Greeting and month in home page — set in `useEffect` after mount, with `suppressHydrationWarning`
@@ -160,13 +175,31 @@ Next.js SSR renders pages on the server before the browser loads. Any code that 
 
 ## Brand
 
-| Color | Hex | Use |
-|-------|-----|-----|
-| Forest Green | `#1a5c38` | Primary brand, headers, buttons |
-| Deep Green | `#0a2918` | Dark backgrounds, toasts |
-| Leaf Green | `#1f7044` | Success states, progress bars |
-| Mint | `#4ade80` | Accents, highlights |
-| Gold | `#e8b420` | Coin icon, warning accents |
+### Primary Colors
+
+| Token       | Hex       | Use                                          |
+| ----------- | --------- | -------------------------------------------- |
+| Teal        | `#259583` | Primary brand, buttons, active states, nav   |
+| Bright Teal | `#40FFE1` | Coin icon, accents, nudge badges, highlights |
+| Light Teal  | `#C0FFF5` | Backgrounds, hover states, success states    |
+
+### Secondary Colors
+
+| Token     | Hex       | Use                                    |
+| --------- | --------- | -------------------------------------- |
+| Dark      | `#011412` | Sidebar, hero cards, headings on light |
+| Muted     | `#415353` | Secondary text, muted labels           |
+| Gray      | `#8EA2A2` | Placeholder text, hints                |
+| Off-White | `#F1F3F3` | Page backgrounds, input fields         |
+| White     | `#FFFFFF` | Card surfaces                          |
+
+### Dark Mode
+
+| Token      | Hex       | Use                         |
+| ---------- | --------- | --------------------------- |
+| Background | `#011412` | Page body, sidebar          |
+| Surface    | `#0d1f1d` | Cards, modals, dropdowns    |
+| Muted      | `#415353` | Secondary text in dark mode |
 
 Font pairing: **Playfair Display** (headings) + **Plus Jakarta Sans** (body)
 
@@ -174,10 +207,10 @@ Font pairing: **Playfair Display** (headings) + **Plus Jakarta Sans** (body)
 
 ## About the Name
 
-> **Kurot** is inspired by the traditional Filipino budgeting habit of *magkurot ng pera* — the practice of pinching off small portions of money and setting them aside for specific needs. The app brings this cultural wisdom into the digital age through a smart envelope budgeting system, helping users everywhere allocate, track, and manage their money more intentionally.
+> **Kurot** is inspired by the traditional Filipino budgeting habit of _magkurot ng pera_ — the practice of pinching off small portions of money and setting them aside for specific needs. The app brings this cultural wisdom into the digital age through a smart envelope budgeting system, helping users everywhere allocate, track, and manage their money more intentionally.
 
-*"Set aside a little for every need."*
+_"Set aside a little for every need."_
 
 ---
 
-*Kurot v1.1 — Inspired by the Filipino tradition of magkurot ng pera 🇵🇭*
+_Kurot v1.2 — Inspired by the Filipino tradition of magkurot ng pera 🇵🇭_

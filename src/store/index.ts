@@ -229,7 +229,7 @@ export const useKurotStore = create<KurotState>()(
           startDate: '2026-01-01',
           targetDate: '2026-12-31',
           notes: '3 months of expenses',
-          color: '#1a6127',
+          color: '#259583',
           contributions: [
             {
               id: 'gc1',
@@ -616,10 +616,10 @@ export const useKurotStore = create<KurotState>()(
 
 export const CAT_COLORS: Record<string, string> = {
   Housing: '#185FA5',
-  Food: '#1a6127',
+  Food: '#259583',
   Transport: '#854F0B',
   Health: '#993556',
-  Savings: '#1d9c33',
+  Savings: '#40FFE1',
   Entertainment: '#993C1D',
   Utilities: '#534AB7',
   Other: '#5F5E5A',

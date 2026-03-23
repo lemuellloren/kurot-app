@@ -107,11 +107,15 @@ export default function Home() {
               onClick={() => setShowNudges(true)}
               className='lg:hidden w-full flex items-center gap-2 rounded-2xl px-4 py-2.5 text-left border mb-4'
               style={{
-                background: 'rgba(232,180,32,0.10)',
-                borderColor: 'rgba(232,180,32,0.25)',
+                background: 'rgba(64,255,225,0.10)',
+                borderColor: 'rgba(64,255,225,0.22)',
               }}
             >
-              <Bell size={14} className='text-yellow-700 flex-shrink-0' />
+              <Bell
+                size={14}
+                className='flex-shrink-0'
+                style={{ color: 'var(--brand)' }}
+              />
               <span className='text-xs font-semibold text-green-900 flex-1'>
                 {unread.length} smart nudge{unread.length > 1 ? 's' : ''} — tap
                 to review
@@ -331,7 +335,7 @@ export default function Home() {
                             style={{
                               width: `${pct}%`,
                               background:
-                                d.type === 'owe' ? '#dc2626' : '#1a6127',
+                                d.type === 'owe' ? '#dc2626' : '#259583',
                             }}
                           />
                         </div>
@@ -405,11 +409,15 @@ export default function Home() {
               onClick={() => setShowNudges(true)}
               className='w-full flex items-center gap-2 rounded-2xl px-4 py-2.5 text-left border'
               style={{
-                background: 'rgba(232,180,32,0.12)',
-                borderColor: 'rgba(232,180,32,0.3)',
+                background: 'rgba(64,255,225,0.10)',
+                borderColor: 'rgba(64,255,225,0.25)',
               }}
             >
-              <Bell size={14} className='text-yellow-700 flex-shrink-0' />
+              <Bell
+                size={14}
+                className='flex-shrink-0'
+                style={{ color: 'var(--brand)' }}
+              />
               <span className='text-xs font-semibold text-green-900 flex-1'>
                 {unread.length} smart nudge{unread.length > 1 ? 's' : ''} need
                 your attention
@@ -583,9 +591,9 @@ function EnvelopeCard({
   const spent = env.txns.reduce((a: number, t: any) => a + t.amt, 0);
   const rem = env.budget - spent;
   const pct = pctOf(spent, env.budget);
-  const barColor = pct >= 100 ? '#dc2626' : pct >= 80 ? '#d97706' : '#1a7b2b';
+  const barColor = pct >= 100 ? '#dc2626' : pct >= 80 ? '#d97706' : '#259583';
   const remColor =
-    rem < 0 ? '#dc2626' : rem < env.budget * 0.2 ? '#d97706' : '#1a7b2b';
+    rem < 0 ? '#dc2626' : rem < env.budget * 0.2 ? '#d97706' : '#259583';
 
   return (
     <div

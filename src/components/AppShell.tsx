@@ -225,7 +225,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 {unread.length > 0 && (
                   <span
                     className='absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-green-900'
-                    style={{ background: '#e8b420' }}
+                    style={{ background: '#40FFE1' }}
                   >
                     {unread.length > 9 ? '9+' : unread.length}
                   </span>
@@ -388,7 +388,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             {unread.length > 0 && (
               <span
                 className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-green-900'
-                style={{ background: '#e8b420' }}
+                style={{ background: '#40FFE1' }}
               >
                 {unread.length}
               </span>
@@ -445,7 +445,7 @@ function KurotCoinIcon({ size = 20 }: { size?: number }) {
       aria-hidden='true'
       className='flex-shrink-0'
     >
-      <circle cx='256' cy='256' r='210' fill='#f4c842' opacity='0.92' />
+      <circle cx='256' cy='256' r='210' fill='#40FFE1' opacity='0.92' />
       <text
         x='256'
         y='272'
@@ -453,7 +453,7 @@ function KurotCoinIcon({ size = 20 }: { size?: number }) {
         fontFamily='Georgia,serif'
         fontSize='200'
         fontWeight='700'
-        fill='#1a6127'
+        fill='#011412'
       >
         ₱
       </text>
