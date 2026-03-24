@@ -364,7 +364,7 @@ export default function SettingsPage() {
                   x='256'
                   y='272'
                   textAnchor='middle'
-                  fontFamily='Georgia,serif'
+                  fontFamily='Poppins,sans-serif'
                   fontSize='200'
                   fontWeight='700'
                   fill='#011412'

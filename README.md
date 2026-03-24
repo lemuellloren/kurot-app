@@ -201,7 +201,7 @@ Next.js SSR renders pages on the server before the browser loads. Any code that 
 | Surface    | `#0d1f1d` | Cards, modals, dropdowns    |
 | Muted      | `#415353` | Secondary text in dark mode |
 
-Font pairing: **Playfair Display** (headings) + **Plus Jakarta Sans** (body)
+Font pairing: **Poppins** (headings & display) + **Plus Jakarta Sans** (body)
 
 ---
 
