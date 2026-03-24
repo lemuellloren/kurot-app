@@ -91,7 +91,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* ── DESKTOP SIDEBAR ── */}
       <aside
         className='hidden lg:flex flex-col w-64 xl:w-72 flex-shrink-0 fixed left-0 top-0 bottom-0 z-40 transition-colors duration-200'
-        style={{ background: 'var(--bg-sidebar)' }}
+        style={{ background: '#000d0b' }}
       >
         {/* Logo */}
         <div className='px-6 pt-7 pb-5 flex items-center gap-3 border-b border-white/10'>
@@ -215,17 +215,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   'relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors',
                   nudgeOpen ? 'bg-green-100' : 'hover:bg-green-50',
                 )}
+                style={nudgeOpen ? { background: 'var(--brand-lighter)' } : {}}
               >
                 <Bell
                   size={18}
-                  className={
-                    unread.length > 0 ? 'text-green-800' : 'text-green-700/40'
-                  }
+                  style={{
+                    color:
+                      unread.length > 0 ? 'var(--brand)' : 'var(--text-muted)',
+                  }}
                 />
                 {unread.length > 0 && (
                   <span
-                    className='absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-green-900'
-                    style={{ background: '#40FFE1' }}
+                    className='absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold'
+                    style={{ background: '#40FFE1', color: '#415353' }}
                   >
                     {unread.length > 9 ? '9+' : unread.length}
                   </span>
@@ -259,7 +261,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         Smart Nudges
                       </p>
                       {unread.length > 0 && (
-                        <span className='text-[10px] font-bold text-green-800 bg-green-100 px-1.5 py-0.5 rounded-full'>
+                        <span
+                          className='text-[10px] font-bold px-1.5 py-0.5 rounded-full'
+                          style={{
+                            background: 'var(--brand-lighter)',
+                            color: 'var(--brand)',
+                          }}
+                        >
                           {unread.length} new
                         </span>
                       )}
@@ -270,7 +278,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                           store.clearReadNudges();
                           setNudgeOpen(false);
                         }}
-                        className='flex items-center gap-1 text-xs text-green-700/60 hover:text-green-800 font-semibold'
+                        className='flex items-center gap-1 text-xs font-semibold transition-colors'
+                        style={{ color: 'var(--text-muted)' }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.color = 'var(--brand)')
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.color = 'var(--text-muted)')
+                        }
                       >
                         <CheckCheck size={12} />
                         Clear all
@@ -284,12 +299,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                       <div className='py-8 text-center'>
                         <Bell
                           size={24}
-                          className='text-green-700/20 mx-auto mb-2'
+                          className='mx-auto mb-2'
+                          style={{ color: 'var(--text-muted)' }}
                         />
-                        <p className='text-sm text-green-700/40'>
+                        <p
+                          className='text-sm'
+                          style={{ color: 'var(--text-secondary)' }}
+                        >
                           All caught up!
                         </p>
-                        <p className='text-xs text-green-700/30 mt-0.5'>
+                        <p
+                          className='text-xs mt-0.5'
+                          style={{ color: 'var(--text-muted)' }}
+                        >
                           No nudges right now
                         </p>
                       </div>
@@ -298,9 +320,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         <div
                           key={n.id}
                           className={clsx(
-                            'flex items-start gap-3 px-4 py-3 border-b border-green-800/[0.06] last:border-0 transition-colors',
-                            n.read ? 'opacity-45' : 'hover:bg-green-50/50',
+                            'flex items-start gap-3 px-4 py-3 border-b last:border-0 transition-colors',
+                            n.read ? 'opacity-40' : '',
                           )}
+                          style={{ borderColor: 'var(--border-default)' }}
                         >
                           <span className='text-sm flex-shrink-0 mt-0.5'>
                             {n.severity === 'danger'
@@ -310,19 +333,26 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                                 : '🔵'}
                           </span>
                           <div className='flex-1 min-w-0'>
-                            <p className='text-xs text-green-900 leading-relaxed'>
+                            <p
+                              className='text-xs leading-relaxed'
+                              style={{ color: 'var(--text-primary)' }}
+                            >
                               {n.message}
                             </p>
-                            <p className='text-[10px] text-green-700/35 mt-1'>
+                            <p
+                              className='text-[10px] mt-1'
+                              style={{ color: 'var(--text-muted)' }}
+                            >
                               {n.date}
                             </p>
                           </div>
                           {!n.read && (
                             <button
                               onClick={() => store.markNudgeRead(n.id)}
-                              className='flex-shrink-0 w-5 h-5 rounded-full hover:bg-green-100 flex items-center justify-center mt-0.5'
+                              className='flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 transition-colors'
+                              style={{ color: 'var(--text-muted)' }}
                             >
-                              <X size={11} className='text-green-700/50' />
+                              <X size={11} />
                             </button>
                           )}
                         </div>
@@ -341,7 +371,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     <Link
                       href='/settings'
                       onClick={() => setNudgeOpen(false)}
-                      className='text-xs text-green-700 font-semibold hover:text-green-800'
+                      className='text-xs font-semibold transition-colors'
+                      style={{ color: 'var(--brand)' }}
                     >
                       Manage nudges in Settings →
                     </Link>
@@ -351,8 +382,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Avatar */}
-            <div className='w-8 h-8 rounded-full bg-green-800 flex items-center justify-center'>
-              <span className='text-white text-xs font-bold'>
+            <div
+              className='w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0'
+              style={{ background: 'var(--brand)' }}
+            >
+              <span
+                className='text-xs font-bold'
+                style={{ color: 'var(--bg-sidebar)' }}
+              >
                 {store.userName ? store.userName[0].toUpperCase() : 'K'}
               </span>
             </div>
@@ -370,7 +407,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {/* Mobile status bar */}
         <div
           className='px-5 pt-3.5 pb-2.5 flex justify-between items-center flex-shrink-0 transition-colors duration-200'
-          style={{ background: 'var(--bg-sidebar)' }}
+          style={{ background: '#000d0b' }}
         >
           <span
             className='text-white/70 text-xs font-semibold tabular-nums'
@@ -387,8 +424,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <div className='flex items-center gap-2'>
             {unread.length > 0 && (
               <span
-                className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-green-900'
-                style={{ background: '#40FFE1' }}
+                className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold'
+                style={{ background: '#40FFE1', color: '#415353' }}
               >
                 {unread.length}
               </span>
