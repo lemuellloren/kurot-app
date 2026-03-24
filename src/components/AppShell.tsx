@@ -444,10 +444,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Mobile bottom nav */}
         <nav
-          className='fixed bottom-0 left-0 right-0 flex z-50 border-t transition-colors duration-200'
+          className='fixed bottom-0 left-0 right-0 flex z-50 border-t'
           style={{
-            background: 'var(--bg-card)',
-            borderColor: 'var(--border-default)',
+            background: '#000d0b',
+            borderColor: 'rgba(64,255,225,0.10)',
             paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
           }}
         >
@@ -459,8 +459,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 href={href}
                 className={clsx(
                   'flex flex-col items-center gap-0.5 py-2 flex-1 text-[10px] font-bold uppercase tracking-wide transition-colors duration-150',
-                  active ? 'text-green-800' : 'text-green-700/35',
                 )}
+                style={{ color: isActive(href) ? '#40FFE1' : '#415353' }}
               >
                 <Icon size={19} strokeWidth={active ? 2.5 : 1.8} />
                 <span>{label}</span>
