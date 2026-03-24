@@ -123,7 +123,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Nav items */}
-        <nav className='flex-1 px-3 py-4 space-y-0.5 overflow-y-auto'>
+        <nav
+          className='flex-1 px-3 py-4 space-y-0.5 overflow-y-auto'
+          style={{ background: 'transparent' }}
+        >
           {NAV.map(({ href, label, Icon, desc }) => {
             const active = isActive(href);
             return (

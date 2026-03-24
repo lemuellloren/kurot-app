@@ -47,9 +47,9 @@
   --gold: #f4c842;
 
   --bg-body: #011412;
-  --bg-page: #011412;
-  --bg-card: #0d1f1d;
-  --bg-input: #162420;
+  --bg-page: #112221;
+  --bg-card: #1a3330;
+  --bg-input: #1f3b38;
   --bg-sidebar: #000d0b;
   --bg-header: rgba(1, 20, 18, 0.97);
 
@@ -206,10 +206,10 @@ body {
 }
 
 .dark .bg-white {
-  background-color: #0d1f1d !important;
+  background-color: #1a3330 !important;
 }
 .dark .bg-green-50 {
-  background-color: #011412 !important;
+  background-color: #112221 !important;
 }
 .dark .bg-green-100 {
   background-color: rgba(64, 255, 225, 0.08) !important;
@@ -219,7 +219,7 @@ body {
 }
 .dark .bg-green-50\/50,
 .dark .bg-green-50\/60 {
-  background-color: rgba(13, 31, 29, 0.6) !important;
+  background-color: rgba(26, 50, 48, 0.6) !important;
 }
 
 .dark .text-green-900 {
@@ -260,7 +260,7 @@ body {
 .dark input,
 .dark select,
 .dark textarea {
-  background-color: #162420 !important;
+  background-color: #1f3b38 !important;
   color: #f1f3f3 !important;
   border-color: rgba(64, 255, 225, 0.15) !important;
 }
@@ -268,14 +268,14 @@ body {
   color: #415353 !important;
 }
 .dark select option {
-  background: #0d1f1d;
+  background: #1a3330;
   color: #f1f3f3;
 }
 
 .dark .rounded-3xl.border,
 .dark .rounded-2xl.border,
 .dark .rounded-xl.border {
-  background-color: #0d1f1d !important;
+  background-color: #1a3330 !important;
 }
 
 .dark .bg-red-50 {
@@ -295,7 +295,7 @@ body {
   background-color: rgba(64, 255, 225, 0.1) !important;
 }
 .dark .rounded-t-\[28px\] {
-  background-color: #0d1f1d !important;
+  background-color: #1a3330 !important;
 }
 .dark .bg-white\/10 {
   background-color: rgba(255, 255, 255, 0.05) !important;
@@ -303,8 +303,16 @@ body {
 .dark .bg-white\/15 {
   background-color: rgba(255, 255, 255, 0.08) !important;
 }
-.dark .flex-1.overflow-y-auto {
-  background-color: #011412;
+.dark .flex-1.overflow-y-auto:not(nav) {
+  background-color: #112221;
+}
+
+/* Protect sidebar from dark mode bg overrides */
+.dark aside[style*='000d0b'] {
+  background-color: #000d0b !important;
+}
+.dark aside[style*='000d0b'] nav {
+  background-color: transparent !important;
 }
 
 /* ─── Smooth theme transition ───────────────────────────────────── */
