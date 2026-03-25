@@ -47,7 +47,7 @@
   --gold: #f4c842;
 
   --bg-body: #011412;
-  --bg-page: #112221;
+  --bg-page: #011412;
   --bg-card: #1a3330;
   --bg-input: #1f3b38;
   --bg-sidebar: #000d0b;
@@ -209,7 +209,7 @@ body {
   background-color: #1a3330 !important;
 }
 .dark .bg-green-50 {
-  background-color: #112221 !important;
+  background-color: #011412 !important;
 }
 .dark .bg-green-100 {
   background-color: rgba(64, 255, 225, 0.08) !important;
@@ -304,7 +304,7 @@ body {
   background-color: rgba(255, 255, 255, 0.08) !important;
 }
 .dark .flex-1.overflow-y-auto:not(nav) {
-  background-color: #112221;
+  background-color: #011412;
 }
 
 /* Protect sidebar from dark mode bg overrides */

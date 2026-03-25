@@ -400,7 +400,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page content */}
-        <main className='flex-1 overflow-y-auto p-6 xl:p-8'>
+        <main
+          className='flex-1 overflow-y-auto p-6 xl:p-8 transition-colors duration-200'
+          style={{ background: 'var(--bg-page)' }}
+        >
           <div className='max-w-5xl mx-auto'>{children}</div>
         </main>
       </div>
