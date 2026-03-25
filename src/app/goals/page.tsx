@@ -9,7 +9,7 @@ import { Plus, Trash2, PlusCircle, Target } from 'lucide-react';
 import clsx from 'clsx';
 
 const GOAL_COLORS = [
-  '#1a6127',
+  '#259583',
   '#185FA5',
   '#854F0B',
   '#993556',
@@ -44,7 +44,7 @@ export default function GoalsPage() {
             ].map((s) => (
               <div
                 key={s.label}
-                className='bg-white/10 rounded-xl px-2 py-2 text-center'
+                className='bg-white/10 rounded-md px-2 py-2 text-center'
               >
                 <p className='text-white/50 text-[10px] uppercase tracking-wide'>
                   {s.label}
@@ -138,7 +138,7 @@ function GoalCard({
             size={52}
             stroke={5}
             color={g.color}
-            bg='#ddfbe1'
+            bg='#C0FFF5'
           >
             <span className='text-[10px] font-bold text-green-800'>{pct}%</span>
           </ProgressRing>
@@ -238,7 +238,7 @@ function GoalCard({
             )}
             <button
               onClick={onDelete}
-              className='h-10 px-4 text-xs text-red-400 font-semibold border border-red-200 rounded-xl flex items-center gap-1'
+              className='h-10 px-4 text-xs text-red-400 font-semibold border border-red-200 rounded-md flex items-center gap-1'
             >
               <Trash2 size={12} /> Delete
             </button>
@@ -348,7 +348,7 @@ function AddGoalModal({ onClose }: { onClose: () => void }) {
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-2xl text-green-700/70 font-semibold'
+          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
         >
           Cancel
         </button>
@@ -415,7 +415,7 @@ function ContributeModal({
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-2xl text-green-700/70 font-semibold'
+          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
         >
           Cancel
         </button>

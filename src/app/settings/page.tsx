@@ -67,13 +67,13 @@ export default function SettingsPage() {
         <HeroCard eyebrow='Settings' title='Customize Kurot' />
 
         {/* Tabs */}
-        <div className='grid grid-cols-4 gap-1 bg-green-100 rounded-2xl p-1'>
+        <div className='grid grid-cols-4 gap-1 bg-green-100 rounded-md p-1'>
           {TABS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
               className={clsx(
-                'py-2 text-[11px] font-bold rounded-xl transition-all leading-tight',
+                'py-2 text-[11px] font-bold rounded-md transition-all leading-tight',
                 tab === t.key
                   ? 'bg-white text-green-800 shadow-sm'
                   : 'text-green-700/55',
@@ -152,7 +152,7 @@ export default function SettingsPage() {
                     key={opt.key}
                     onClick={() => store.setTheme(opt.key)}
                     className={clsx(
-                      'flex flex-col items-center gap-1.5 py-3 rounded-2xl border text-xs font-bold transition-all',
+                      'flex flex-col items-center gap-1.5 py-3 rounded-md border text-xs font-bold transition-all',
                       theme === opt.key
                         ? 'text-white border-transparent'
                         : 'border-green-800/20 text-green-700/70 hover:border-green-800/40',
@@ -227,7 +227,7 @@ export default function SettingsPage() {
                 <div key={r.id} className='card p-3.5 flex items-center gap-3'>
                   <div
                     className={clsx(
-                      'w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0',
+                      'w-9 h-9 rounded-md flex items-center justify-center flex-shrink-0',
                       r.type === 'income' ? 'bg-green-100' : 'bg-red-50',
                     )}
                   >
@@ -351,7 +351,7 @@ export default function SettingsPage() {
         {/* About section always shown at bottom */}
         <div className='card p-4 mt-2'>
           <div className='flex items-center gap-3 mb-3'>
-            <div className='w-12 h-12 rounded-2xl bg-green-800 flex items-center justify-center flex-shrink-0'>
+            <div className='w-12 h-12 rounded-md bg-green-800 flex items-center justify-center flex-shrink-0'>
               <svg width='28' height='28' viewBox='0 0 512 512'>
                 <circle
                   cx='256'
@@ -437,7 +437,7 @@ function CategoryBudgetRow({ cat, existing, currency }: any) {
         </div>
         <button
           onClick={() => setEditing((v) => !v)}
-          className='text-xs text-green-700 font-semibold px-3 py-1.5 bg-green-50 rounded-lg'
+          className='text-xs text-green-700 font-semibold px-3 py-1.5 bg-green-50 rounded-md'
         >
           {editing ? 'Cancel' : existing ? 'Edit' : 'Set limit'}
         </button>
@@ -477,7 +477,7 @@ function CategoryBudgetRow({ cat, existing, currency }: any) {
                   store.removeCategoryBudget(cat);
                   setEditing(false);
                 }}
-                className='h-9 px-3 text-xs text-red-400 font-semibold border border-red-200 rounded-xl'
+                className='h-9 px-3 text-xs text-red-400 font-semibold border border-red-200 rounded-md'
               >
                 Remove
               </button>
@@ -532,7 +532,7 @@ function AddRecurringModal({ onClose }: { onClose: () => void }) {
               key={t}
               onClick={() => setType(t)}
               className={clsx(
-                'flex-1 py-2.5 text-xs font-bold rounded-xl border transition-all capitalize',
+                'flex-1 py-2.5 text-xs font-bold rounded-md border transition-all capitalize',
                 type === t
                   ? 'bg-green-800 text-white border-green-800'
                   : 'border-green-800/20 text-green-700/70',
@@ -601,7 +601,7 @@ function AddRecurringModal({ onClose }: { onClose: () => void }) {
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-2xl text-green-700/70 font-semibold'
+          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
         >
           Cancel
         </button>

@@ -53,9 +53,9 @@ module.exports = {
         sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
-        '2xl': '1rem',
-        '3xl': '1.5rem',
-        '4xl': '2rem',
+        '2xl': '0.375rem',
+        '3xl': '0.375rem',
+        '4xl': '0.375rem',
       },
       boxShadow: {
         card: '0 2px 12px rgba(37,149,131,0.10)',

@@ -105,7 +105,7 @@ export default function Home() {
           {unread.length > 0 && (
             <button
               onClick={() => setShowNudges(true)}
-              className='lg:hidden w-full flex items-center gap-2 rounded-2xl px-4 py-2.5 text-left border mb-4'
+              className='lg:hidden w-full flex items-center gap-2 rounded-md px-4 py-2.5 text-left border mb-4'
               style={{
                 background: 'rgba(64,255,225,0.10)',
                 borderColor: 'rgba(64,255,225,0.22)',
@@ -163,7 +163,7 @@ export default function Home() {
             ].map((m) => (
               <div
                 key={m.label}
-                className={clsx('rounded-3xl p-5 shadow-card', m.bg)}
+                className={clsx('rounded-md p-5 shadow-card', m.bg)}
               >
                 <p
                   className={clsx(
@@ -407,7 +407,7 @@ export default function Home() {
           {unread.length > 0 && (
             <button
               onClick={() => setShowNudges(true)}
-              className='w-full flex items-center gap-2 rounded-2xl px-4 py-2.5 text-left border'
+              className='w-full flex items-center gap-2 rounded-md px-4 py-2.5 text-left border'
               style={{
                 background: 'rgba(64,255,225,0.10)',
                 borderColor: 'rgba(64,255,225,0.25)',
@@ -427,7 +427,7 @@ export default function Home() {
           )}
 
           {/* Mobile Hero */}
-          <div className='bg-green-800 rounded-[28px] p-5 relative overflow-hidden'>
+          <div className='bg-green-800 rounded-md p-5 relative overflow-hidden'>
             <div className='absolute -top-8 -right-8 w-36 h-36 bg-white/[0.04] rounded-full pointer-events-none' />
             <div className='absolute -bottom-10 -left-4 w-24 h-24 bg-white/[0.03] rounded-full pointer-events-none' />
             <div className='relative z-10'>
@@ -547,7 +547,7 @@ export default function Home() {
               <div
                 key={n.id}
                 className={clsx(
-                  'rounded-2xl p-3 flex items-start gap-3 border',
+                  'rounded-md p-3 flex items-start gap-3 border',
                   n.severity === 'danger'
                     ? 'bg-red-50 border-red-200'
                     : n.severity === 'warning'
@@ -609,7 +609,7 @@ function EnvelopeCard({
         <div className='flex justify-between items-start mb-3'>
           <div className='flex items-center gap-3'>
             <div
-              className='w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0'
+              className='w-10 h-10 rounded-md flex items-center justify-center text-lg flex-shrink-0'
               style={{ background: `${CAT_COLORS[env.cat]}1a` }}
             >
               {CAT_ICONS[env.cat]}
@@ -799,7 +799,7 @@ function AddEnvelopeModal({ onClose }: { onClose: () => void }) {
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-2xl text-green-700/70 font-semibold'
+          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
         >
           Cancel
         </button>

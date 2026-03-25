@@ -101,7 +101,7 @@ body {
     background: var(--bg-card);
     border-color: var(--border-default);
     box-shadow: var(--shadow-card);
-    @apply rounded-3xl border;
+    @apply rounded-md border;
   }
   .card-pressed {
     @apply active:scale-[0.98] transition-transform duration-100;
@@ -110,12 +110,12 @@ body {
   .btn-primary {
     background: var(--brand);
     color: var(--text-on-brand);
-    @apply font-bold rounded-2xl px-5 py-3 text-sm active:opacity-80 transition-opacity;
+    @apply font-bold rounded-md px-5 py-3 text-sm active:opacity-80 transition-opacity;
   }
   .btn-secondary {
     background: var(--brand-lighter);
     color: var(--brand);
-    @apply font-bold rounded-2xl px-5 py-3 text-sm active:opacity-80 transition-opacity;
+    @apply font-bold rounded-md px-5 py-3 text-sm active:opacity-80 transition-opacity;
   }
   .btn-ghost {
     color: var(--brand);
@@ -125,7 +125,7 @@ body {
     background: var(--bg-input);
     color: var(--text-primary);
     border-color: var(--border-strong);
-    @apply w-full h-11 text-sm border rounded-xl px-3 focus:outline-none font-sans;
+    @apply w-full h-11 text-sm border rounded-md px-3 focus:outline-none font-sans;
   }
   .input:focus {
     border-color: var(--brand);
@@ -274,7 +274,8 @@ body {
 
 .dark .rounded-3xl.border,
 .dark .rounded-2xl.border,
-.dark .rounded-xl.border {
+.dark .rounded-xl.border,
+.dark .rounded-md.border {
   background-color: #1a3330 !important;
 }
 

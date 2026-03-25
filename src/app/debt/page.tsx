@@ -37,7 +37,7 @@ export default function DebtPage() {
         >
           <div className='grid grid-cols-2 gap-2'>
             <div
-              className='rounded-xl px-3 py-2'
+              className='rounded-md px-3 py-2'
               style={{ background: 'rgba(239,68,68,0.18)' }}
             >
               <p className='text-red-200 text-[10px] uppercase tracking-wide flex items-center gap-1'>
@@ -49,7 +49,7 @@ export default function DebtPage() {
               <p className='text-white/45 text-[10px]'>{owe.length} active</p>
             </div>
             <div
-              className='rounded-xl px-3 py-2'
+              className='rounded-md px-3 py-2'
               style={{ background: 'rgba(74,222,128,0.15)' }}
             >
               <p className='text-green-200 text-[10px] uppercase tracking-wide flex items-center gap-1'>
@@ -64,13 +64,13 @@ export default function DebtPage() {
         </HeroCard>
 
         {/* Tabs */}
-        <div className='flex bg-green-100 rounded-2xl p-1 gap-1'>
+        <div className='flex bg-green-100 rounded-md p-1 gap-1'>
           {(['owe', 'owed'] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={clsx(
-                'flex-1 py-2 text-xs font-bold rounded-xl transition-all',
+                'flex-1 py-2 text-xs font-bold rounded-md transition-all',
                 tab === t
                   ? 'bg-white text-green-800 shadow-sm'
                   : 'text-green-700/55',
@@ -142,7 +142,7 @@ function DebtCard({ debt: d, fp, onPay, onDelete, settled = false }: any) {
   const pct = pctOf(d.totalAmount - d.remainingAmount, d.totalAmount);
   const daysLeft = daysUntil(d.dueDate);
   const isOwe = d.type === 'owe';
-  const color = isOwe ? '#dc2626' : '#1a6127';
+  const color = isOwe ? '#dc2626' : '#259583';
 
   return (
     <div className='card overflow-hidden'>
@@ -156,7 +156,7 @@ function DebtCard({ debt: d, fp, onPay, onDelete, settled = false }: any) {
             size={52}
             stroke={5}
             color={color}
-            bg={isOwe ? '#fee2e2' : '#ddfbe1'}
+            bg={isOwe ? '#fee2e2' : '#C0FFF5'}
           >
             <span className='text-[10px] font-bold' style={{ color }}>
               {pct}%
@@ -273,7 +273,7 @@ function DebtCard({ debt: d, fp, onPay, onDelete, settled = false }: any) {
             )}
             <button
               onClick={onDelete}
-              className='h-10 px-4 text-xs text-red-400 font-semibold border border-red-200 rounded-xl flex items-center gap-1'
+              className='h-10 px-4 text-xs text-red-400 font-semibold border border-red-200 rounded-md flex items-center gap-1'
             >
               <Trash2 size={12} /> Delete
             </button>
@@ -370,7 +370,7 @@ function AddDebtModal({
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-2xl text-green-700/70 font-semibold'
+          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
         >
           Cancel
         </button>
@@ -438,7 +438,7 @@ function PayModal({
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-2xl text-green-700/70 font-semibold'
+          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
         >
           Cancel
         </button>

@@ -134,7 +134,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 key={href}
                 href={href}
                 className={clsx(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-md transition-all group',
                   active
                     ? 'bg-white/15 text-white'
                     : 'text-white/55 hover:bg-white/8 hover:text-white/80',
@@ -215,7 +215,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <button
                 onClick={() => setNudgeOpen((v) => !v)}
                 className={clsx(
-                  'relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors',
+                  'relative w-9 h-9 rounded-md flex items-center justify-center transition-colors',
                   nudgeOpen ? 'bg-green-100' : 'hover:bg-green-50',
                 )}
                 style={nudgeOpen ? { background: 'var(--brand-lighter)' } : {}}
@@ -240,7 +240,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               {/* Nudge dropdown panel */}
               {nudgeOpen && (
                 <div
-                  className='absolute right-0 top-11 w-80 rounded-2xl border overflow-hidden z-50'
+                  className='absolute right-0 top-11 w-80 rounded-md border overflow-hidden z-50'
                   style={{
                     background: 'var(--bg-card)',
                     borderColor: 'var(--border-default)',
