@@ -232,7 +232,7 @@ body {
   color: #8ea2a2 !important;
 }
 .dark [class*='text-green-700\/'] {
-  color: #415353 !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 .dark .text-red-600 {
   color: #fca5a5 !important;
