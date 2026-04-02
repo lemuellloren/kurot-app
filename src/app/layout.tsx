@@ -5,15 +5,28 @@ import ThemeProvider from '@/components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Kurot — Smart Envelope Budgeting',
-  description:
-    'Set aside a little for every need. Smart envelope budgeting inspired by the Filipino tradition of magkurot ng pera.',
+  description: 'Set aside a little for every need. Smart envelope budgeting.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'Kurot',
   },
-  icons: { icon: '/icon-192.png', apple: '/icon-512.png' },
+  icons: {
+    icon: [
+      {
+        url: '/favicon/web-app-manifest-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        url: '/favicon/web-app-manifest-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+    ],
+    apple: '/favicon/apple-touch-icon.png',
+  },
 };
 
 export const viewport: Viewport = {
