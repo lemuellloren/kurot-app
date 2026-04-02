@@ -17,6 +17,7 @@ const DataPortability = dynamic(() => import('@/components/DataPortability'), {
   ),
 });
 import clsx from 'clsx';
+import Image from 'next/image';
 
 type Tab = 'profile' | 'budgets' | 'recurring' | 'nudges';
 
@@ -351,27 +352,14 @@ export default function SettingsPage() {
         {/* About section always shown at bottom */}
         <div className='card p-4 mt-2'>
           <div className='flex items-center gap-3 mb-3'>
-            <div className='w-12 h-12 rounded-md bg-green-800 flex items-center justify-center flex-shrink-0'>
-              <svg width='28' height='28' viewBox='0 0 512 512'>
-                <circle
-                  cx='256'
-                  cy='256'
-                  r='210'
-                  fill='#40FFE1'
-                  opacity='0.92'
-                />
-                <text
-                  x='256'
-                  y='272'
-                  textAnchor='middle'
-                  fontFamily='Poppins,sans-serif'
-                  fontSize='200'
-                  fontWeight='700'
-                  fill='#011412'
-                >
-                  ₱
-                </text>
-              </svg>
+            <div className='w-12 h-12 rounded-md  flex items-center justify-center flex-shrink-0'>
+              <Image
+                src='/logo-icon.svg'
+                alt='Kurot'
+                width={52}
+                height={52}
+                className='rounded-md'
+              />
             </div>
             <div>
               <p className='font-serif text-xl text-green-900'>Kurot</p>

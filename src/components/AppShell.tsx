@@ -16,6 +16,7 @@ import {
   CheckCheck,
 } from 'lucide-react';
 import clsx from 'clsx';
+import Image from 'next/image';
 
 const NAV = [
   { href: '/', label: 'Budget', Icon: Wallet, desc: 'Envelopes & spending' },
@@ -95,15 +96,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       >
         {/* Logo */}
         <div className='px-6 pt-7 pb-5 flex items-center gap-3 border-b border-white/10'>
-          <KurotCoinIcon size={36} />
-          <div>
-            <p className='font-serif text-2xl text-white leading-none tracking-tight'>
-              Kurot
-            </p>
-            <p className='text-white/40 text-[11px] mt-0.5 italic'>
-              set aside a little for every need
-            </p>
-          </div>
+          <Image src='/logo.svg' alt='Kurot' width={120} height={36} />
         </div>
 
         {/* User greeting */}
@@ -422,10 +415,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             {time}
           </span>
           <div className='flex items-center gap-2'>
-            <KurotCoinIcon size={20} />
-            <span className='font-serif text-[17px] text-white tracking-tight leading-none'>
-              Kurot
-            </span>
+            <Image src='/logo.svg' alt='Kurot' width={120} height={36} />
           </div>
           <div className='flex items-center gap-2'>
             {unread.length > 0 && (
@@ -476,30 +466,5 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
       </div>
     </div>
-  );
-}
-
-function KurotCoinIcon({ size = 20 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox='0 0 512 512'
-      aria-hidden='true'
-      className='flex-shrink-0'
-    >
-      <circle cx='256' cy='256' r='210' fill='#40FFE1' opacity='0.92' />
-      <text
-        x='256'
-        y='272'
-        textAnchor='middle'
-        fontFamily='Poppins,sans-serif'
-        fontSize='200'
-        fontWeight='700'
-        fill='#011412'
-      >
-        ₱
-      </text>
-    </svg>
   );
 }
