@@ -6,7 +6,6 @@ interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
   className?: string;
-  title?: string;
   size?: 'sm' | 'md' | 'lg';
 }
 
@@ -21,7 +20,6 @@ export default function Modal({
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', handler);
-    // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', handler);
@@ -38,47 +36,50 @@ export default function Modal({
 
   return (
     <div
-      className='fixed inset-0 z-50 flex'
-      // Mobile: bottom sheet — items aligned to bottom center
-      // Desktop: centered dialog
+      className='fixed inset-0 z-50'
       style={{ background: 'rgba(0,0,0,0.55)' }}
       onClick={onClose}
     >
-      {/* Mobile bottom sheet */}
-      <div
-        className={clsx(
-          // Mobile: slides up from bottom, full width capped at 430px
-          'lg:hidden flex items-end justify-center w-full absolute bottom-0 left-0 right-0',
-        )}
-        onClick={(e) => e.stopPropagation()}
-      >
+      {/* ── MOBILE: bottom sheet ── */}
+      <div className='lg:hidden absolute inset-0 flex flex-col justify-end'>
         <div
           className={clsx(
-            'w-full max-w-[430px] mx-auto max-h-[92dvh] overflow-y-auto rounded-t-md',
+            'w-full rounded-t-md flex flex-col',
+            'max-h-[92dvh]',
             className,
           )}
-          style={{
-            background: 'var(--bg-card)',
-            borderColor: 'var(--border-default)',
-          }}
+          style={{ background: 'var(--bg-card)' }}
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Handle bar */}
+          {/* Drag handle */}
+          <div className='flex-shrink-0 pt-3 pb-1 flex justify-center'>
+            <div
+              className='w-9 h-1 rounded-full'
+              style={{ background: 'var(--border-strong)' }}
+            />
+          </div>
+
+          {/* Scrollable content */}
           <div
-            className='w-9 h-1 rounded-full mx-auto mt-3 mb-1'
-            style={{ background: 'var(--border-strong)' }}
-          />
-          <div className='px-5 pb-6 pt-3'>{children}</div>
+            className='overflow-y-auto overscroll-contain px-5 pt-2 pb-28'
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))',
+            }}
+          >
+            {children}
+          </div>
         </div>
       </div>
 
-      {/* Desktop centered dialog */}
+      {/* ── DESKTOP: centered dialog ── */}
       <div
-        className='hidden lg:flex items-center justify-center w-full p-4'
-        onClick={(e) => e.stopPropagation()}
+        className='hidden lg:flex absolute inset-0 items-center justify-center p-6'
+        onClick={onClose}
       >
         <div
           className={clsx(
-            'w-full rounded-md max-h-[90dvh] overflow-y-auto shadow-2xl',
+            'w-full rounded-md flex flex-col max-h-[90dvh] shadow-2xl',
             maxW,
             className,
           )}
@@ -87,8 +88,12 @@ export default function Modal({
             border: '1px solid var(--border-default)',
             boxShadow: '0 24px 48px rgba(0,0,0,0.35)',
           }}
+          onClick={(e) => e.stopPropagation()}
         >
-          <div className='px-6 py-5'>{children}</div>
+          {/* Scrollable content */}
+          <div className='overflow-y-auto overscroll-contain px-6 py-5'>
+            {children}
+          </div>
         </div>
       </div>
     </div>

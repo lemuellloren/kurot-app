@@ -1,4 +1,4 @@
-# Kurot — Smart Envelope Budgeting
+# Kurot - Smart Envelope Budgeting
 
 ### _Set aside a little for every need._
 
