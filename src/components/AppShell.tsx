@@ -52,7 +52,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const store = useKurotStore();
   const nudges = store.nudges;
   const unread = nudges.filter((n) => !n.read);
-
   const [time, setTime] = useState('');
   const [nudgeOpen, setNudgeOpen] = useState(false);
   const nudgeRef = useRef<HTMLDivElement>(null);
@@ -69,12 +68,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return () => clearInterval(t);
   }, []);
 
-  // Close nudge dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (nudgeRef.current && !nudgeRef.current.contains(e.target as Node)) {
+      if (nudgeRef.current && !nudgeRef.current.contains(e.target as Node))
         setNudgeOpen(false);
-      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -84,42 +81,61 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     if (href === '/') return pathname === '/' || pathname === '';
     return pathname === href || pathname === href + '/';
   };
-
   const currentNav = NAV.find((n) => isActive(n.href));
 
   return (
-    <div className='flex min-h-dvh w-full bg-green-50'>
+    <div
+      className='flex min-h-dvh w-full'
+      style={{ background: 'var(--bg-body)' }}
+    >
       {/* ── DESKTOP SIDEBAR ── */}
       <aside
-        className='hidden lg:flex flex-col w-64 xl:w-72 flex-shrink-0 fixed left-0 top-0 bottom-0 z-40 transition-colors duration-200'
-        style={{ background: '#000d0b' }}
+        className='hidden lg:flex flex-col w-64 xl:w-72 flex-shrink-0 fixed left-0 top-0 bottom-0 z-40'
+        style={{
+          background: '#000d0b',
+          borderRight: '1px solid rgba(255,255,255,0.04)',
+        }}
       >
-        {/* Logo */}
-        <div className='px-6 pt-7 pb-5 flex items-center gap-3 border-b border-white/10'>
-          <Image src='/logo.svg' alt='Kurot' width={120} height={36} />
+        <div
+          className='px-6 pt-7 pb-5 flex items-center border-b'
+          style={{ borderColor: 'rgba(255,255,255,0.06)' }}
+        >
+          <Image src='/logo.svg' alt='Kurot' width={110} height={32} />
         </div>
-
-        {/* User greeting */}
-        <div className='px-6 py-4 border-b border-white/10'>
-          <p className='text-white/40 text-xs uppercase tracking-widest mb-0.5'>
-            Welcome back
-          </p>
-          <p className='text-white font-semibold text-sm truncate'>
-            {store.userName || 'Your account'}
-          </p>
+        <div
+          className='px-5 py-4 border-b'
+          style={{ borderColor: 'rgba(255,255,255,0.06)' }}
+        >
+          <div className='flex items-center gap-3'>
+            <div
+              className='w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm'
+              style={{ background: 'var(--brand)', color: 'var(--brand-text)' }}
+            >
+              {store.userName ? store.userName[0].toUpperCase() : 'K'}
+            </div>
+            <div className='min-w-0'>
+              <p className='text-white font-semibold text-sm truncate leading-tight'>
+                {store.userName || 'Your account'}
+              </p>
+              <p className='text-white/40 text-xs mt-0.5'>
+                {store.currency} {store.income.toLocaleString()} / mo
+              </p>
+            </div>
+          </div>
           <p
-            className='text-white/40 text-xs mt-0.5 tabular-nums'
+            className='text-white/30 text-[11px] tabular-nums mt-3'
             suppressHydrationWarning
           >
             {time}
           </p>
         </div>
-
-        {/* Nav items */}
         <nav
-          className='flex-1 px-3 py-4 space-y-0.5 overflow-y-auto'
+          className='flex-1 px-3 py-3 space-y-0.5 overflow-y-auto'
           style={{ background: 'transparent' }}
         >
+          <p className='text-white/25 text-[10px] font-bold uppercase tracking-widest px-3 pb-2 pt-1'>
+            Menu
+          </p>
           {NAV.map(({ href, label, Icon, desc }) => {
             const active = isActive(href);
             return (
@@ -127,61 +143,86 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 key={href}
                 href={href}
                 className={clsx(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-md transition-all group',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group relative',
                   active
-                    ? 'bg-white/15 text-white'
-                    : 'text-white/55 hover:bg-white/8 hover:text-white/80',
+                    ? 'text-white'
+                    : 'text-white/45 hover:text-white/75 hover:bg-white/5',
                 )}
+                style={active ? { background: 'rgba(64,255,225,0.10)' } : {}}
               >
-                <Icon
-                  size={18}
-                  strokeWidth={active ? 2.5 : 1.8}
-                  className={
-                    active
-                      ? 'text-white'
-                      : 'text-white/50 group-hover:text-white/70'
-                  }
-                />
+                {active && (
+                  <span
+                    className='absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full'
+                    style={{ background: 'var(--brand)' }}
+                  />
+                )}
+                <div
+                  className={clsx(
+                    'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all',
+                  )}
+                  style={active ? { background: 'rgba(64,255,225,0.12)' } : {}}
+                >
+                  <Icon
+                    size={16}
+                    strokeWidth={active ? 2.5 : 1.8}
+                    style={{ color: active ? 'var(--brand)' : undefined }}
+                  />
+                </div>
                 <div className='flex-1 min-w-0'>
                   <p
                     className={clsx(
                       'text-sm font-semibold leading-tight',
-                      active ? 'text-white' : 'text-white/70',
+                      active ? 'text-white' : '',
                     )}
                   >
                     {label}
                   </p>
-                  <p className='text-[11px] text-white/35 leading-tight mt-0.5 truncate'>
+                  <p className='text-[10px] text-white/30 mt-0.5 truncate'>
                     {desc}
                   </p>
                 </div>
                 {active && (
                   <ChevronRight
-                    size={14}
-                    className='text-white/40 flex-shrink-0'
+                    size={13}
+                    className='text-white/30 flex-shrink-0'
                   />
                 )}
               </Link>
             );
           })}
         </nav>
-
-        {/* Income summary */}
-        <div className='px-5 py-4 border-t border-white/10'>
-          <p className='text-white/40 text-[10px] uppercase tracking-widest mb-1'>
-            Monthly Income
-          </p>
-          <p className='text-white font-bold text-lg leading-none'>
-            {store.currency} {store.income.toLocaleString()}
-          </p>
+        {unread.length > 0 && (
+          <div className='px-3 pb-3'>
+            <Link
+              href='/settings'
+              className='flex items-center gap-2.5 px-3 py-2.5 rounded-xl w-full'
+              style={{
+                background: 'rgba(64,255,225,0.08)',
+                border: '1px solid rgba(64,255,225,0.12)',
+              }}
+            >
+              <Bell size={14} style={{ color: 'var(--brand)' }} />
+              <span
+                className='text-xs font-semibold'
+                style={{ color: 'var(--brand)' }}
+              >
+                {unread.length} nudge{unread.length > 1 ? 's' : ''}
+              </span>
+            </Link>
+          </div>
+        )}
+        <div
+          className='px-5 py-3 border-t'
+          style={{ borderColor: 'rgba(255,255,255,0.06)' }}
+        >
+          <p className='text-white/20 text-[10px]'>Kurot v1.0.0 · Offline</p>
         </div>
       </aside>
 
       {/* ── DESKTOP MAIN ── */}
       <div className='hidden lg:flex flex-col flex-1 ml-64 xl:ml-72 min-w-0'>
-        {/* Top bar */}
         <header
-          className='sticky top-0 z-30 backdrop-blur-md border-b px-8 py-3.5 flex justify-between items-center flex-shrink-0 transition-colors duration-200'
+          className='sticky top-0 z-30 backdrop-blur-xl border-b px-8 py-4 flex justify-between items-center flex-shrink-0'
           style={{
             background: 'var(--bg-header)',
             borderColor: 'var(--border-default)',
@@ -189,7 +230,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         >
           <div>
             <h1
-              className='font-serif text-xl leading-tight'
+              className='font-serif text-lg font-semibold leading-tight'
               style={{ color: 'var(--text-primary)' }}
             >
               {currentNav?.label ?? 'Kurot'}
@@ -201,55 +242,44 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               {currentNav?.desc}
             </p>
           </div>
-
-          <div className='flex items-center gap-3'>
-            {/* ── Desktop nudge bell + dropdown ── */}
+          <div className='flex items-center gap-2'>
             <div className='relative' ref={nudgeRef}>
               <button
                 onClick={() => setNudgeOpen((v) => !v)}
-                className={clsx(
-                  'relative w-9 h-9 rounded-md flex items-center justify-center transition-colors',
-                  nudgeOpen ? 'bg-green-100' : 'hover:bg-green-50',
-                )}
-                style={nudgeOpen ? { background: 'var(--brand-lighter)' } : {}}
+                className='relative w-9 h-9 rounded-xl flex items-center justify-center transition-all'
+                style={{
+                  background: nudgeOpen ? 'var(--brand-dim)' : 'var(--bg-card)',
+                  border: '1px solid var(--border-card)',
+                }}
               >
                 <Bell
-                  size={18}
+                  size={16}
                   style={{
                     color:
                       unread.length > 0 ? 'var(--brand)' : 'var(--text-muted)',
                   }}
                 />
                 {unread.length > 0 && (
-                  <span
-                    className='absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold'
-                    style={{ background: '#40FFE1', color: '#415353' }}
-                  >
+                  <span className='absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-black badge'>
                     {unread.length > 9 ? '9+' : unread.length}
                   </span>
                 )}
               </button>
-
-              {/* Nudge dropdown panel */}
               {nudgeOpen && (
                 <div
-                  className='absolute right-0 top-11 w-80 rounded-md border overflow-hidden z-50'
+                  className='absolute right-0 top-11 w-80 rounded-xl border overflow-hidden z-50'
                   style={{
                     background: 'var(--bg-card)',
-                    borderColor: 'var(--border-default)',
+                    borderColor: 'var(--border-strong)',
                     boxShadow: 'var(--shadow-card-lg)',
                   }}
                 >
-                  {/* Panel header */}
                   <div
                     className='flex justify-between items-center px-4 py-3 border-b'
                     style={{ borderColor: 'var(--border-default)' }}
                   >
                     <div className='flex items-center gap-2'>
-                      <Bell
-                        size={14}
-                        style={{ color: 'var(--text-secondary)' }}
-                      />
+                      <Bell size={13} style={{ color: 'var(--text-muted)' }} />
                       <p
                         className='text-sm font-bold'
                         style={{ color: 'var(--text-primary)' }}
@@ -257,15 +287,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         Smart Nudges
                       </p>
                       {unread.length > 0 && (
-                        <span
-                          className='text-[10px] font-bold px-1.5 py-0.5 rounded-full'
-                          style={{
-                            background: 'var(--brand-lighter)',
-                            color: 'var(--brand)',
-                          }}
-                        >
-                          {unread.length} new
-                        </span>
+                        <span className='badge'>{unread.length} new</span>
                       )}
                     </div>
                     {unread.length > 0 && (
@@ -274,41 +296,26 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                           store.clearReadNudges();
                           setNudgeOpen(false);
                         }}
-                        className='flex items-center gap-1 text-xs font-semibold transition-colors'
+                        className='flex items-center gap-1 text-xs font-semibold'
                         style={{ color: 'var(--text-muted)' }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.color = 'var(--brand)')
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.color = 'var(--text-muted)')
-                        }
                       >
-                        <CheckCheck size={12} />
-                        Clear all
+                        <CheckCheck size={11} /> Clear
                       </button>
                     )}
                   </div>
-
-                  {/* Nudge list */}
-                  <div className='max-h-80 overflow-y-auto'>
+                  <div className='max-h-72 overflow-y-auto'>
                     {nudges.length === 0 ? (
                       <div className='py-8 text-center'>
                         <Bell
-                          size={24}
+                          size={22}
                           className='mx-auto mb-2'
                           style={{ color: 'var(--text-muted)' }}
                         />
                         <p
                           className='text-sm'
-                          style={{ color: 'var(--text-secondary)' }}
-                        >
-                          All caught up!
-                        </p>
-                        <p
-                          className='text-xs mt-0.5'
                           style={{ color: 'var(--text-muted)' }}
                         >
-                          No nudges right now
+                          All caught up!
                         </p>
                       </div>
                     ) : (
@@ -316,8 +323,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         <div
                           key={n.id}
                           className={clsx(
-                            'flex items-start gap-3 px-4 py-3 border-b last:border-0 transition-colors',
-                            n.read ? 'opacity-40' : '',
+                            'flex items-start gap-3 px-4 py-3 border-b last:border-0',
+                            n.read && 'opacity-35',
                           )}
                           style={{ borderColor: 'var(--border-default)' }}
                         >
@@ -345,7 +352,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                           {!n.read && (
                             <button
                               onClick={() => store.markNudgeRead(n.id)}
-                              className='flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 transition-colors'
+                              className='flex-shrink-0 mt-0.5'
                               style={{ color: 'var(--text-muted)' }}
                             >
                               <X size={11} />
@@ -355,95 +362,75 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                       ))
                     )}
                   </div>
-
-                  {/* Footer */}
                   <div
                     className='px-4 py-2.5 border-t'
                     style={{
                       borderColor: 'var(--border-default)',
-                      background: 'var(--bg-input)',
+                      background: 'var(--bg-card-alt)',
                     }}
                   >
                     <Link
                       href='/settings'
                       onClick={() => setNudgeOpen(false)}
-                      className='text-xs font-semibold transition-colors'
+                      className='text-xs font-semibold'
                       style={{ color: 'var(--brand)' }}
                     >
-                      Manage nudges in Settings →
+                      Manage in Settings →
                     </Link>
                   </div>
                 </div>
               )}
             </div>
-
-            {/* Avatar */}
             <div
-              className='w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0'
-              style={{ background: 'var(--brand)' }}
+              className='w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm'
+              style={{ background: 'var(--brand)', color: 'var(--brand-text)' }}
             >
-              <span
-                className='text-xs font-bold'
-                style={{ color: 'var(--bg-sidebar)' }}
-              >
-                {store.userName ? store.userName[0].toUpperCase() : 'K'}
-              </span>
+              {store.userName ? store.userName[0].toUpperCase() : 'K'}
             </div>
           </div>
         </header>
-
-        {/* Page content */}
         <main
-          className='flex-1 overflow-y-auto p-6 xl:p-8 transition-colors duration-200'
+          className='flex-1 overflow-y-auto p-6 xl:p-8'
           style={{ background: 'var(--bg-page)' }}
         >
           <div className='max-w-5xl mx-auto'>{children}</div>
         </main>
       </div>
 
-      {/* ── MOBILE LAYOUT ── */}
+      {/* ── MOBILE ── */}
       <div className='flex lg:hidden flex-col w-full min-h-dvh'>
-        {/* Mobile status bar */}
         <div
-          className='px-5 pt-3.5 pb-2.5 flex justify-between items-center flex-shrink-0 transition-colors duration-200'
-          style={{ background: '#000d0b' }}
+          className='px-4 pt-4 pb-3 flex justify-between items-center flex-shrink-0'
+          style={{
+            background: '#000d0b',
+            borderBottom: '1px solid rgba(255,255,255,0.05)',
+          }}
         >
           <span
-            className='text-white/70 text-xs font-semibold tabular-nums'
+            className='text-white/40 text-xs font-semibold tabular-nums'
             suppressHydrationWarning
           >
             {time}
           </span>
-          <div className='flex items-center gap-2'>
-            <Image src='/logo.svg' alt='Kurot' width={120} height={36} />
-          </div>
+          <Image src='/logo.svg' alt='Kurot' width={90} height={26} />
           <div className='flex items-center gap-2'>
             {unread.length > 0 && (
-              <span
-                className='w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold'
-                style={{ background: '#40FFE1', color: '#415353' }}
-              >
-                {unread.length}
-              </span>
+              <span className='badge'>{unread.length}</span>
             )}
-            <span className='text-white/70 text-sm'>⚡</span>
+            <span className='text-white/40 text-xs'>⚡</span>
           </div>
         </div>
-
-        {/* Mobile page content */}
         <div
           className='flex-1 overflow-y-auto overflow-x-hidden'
-          style={{ paddingBottom: 72 }}
+          style={{ paddingBottom: 68 }}
         >
           {children}
         </div>
-
-        {/* Mobile bottom nav */}
         <nav
-          className='fixed bottom-0 left-0 right-0 flex z-50 border-t'
+          className='fixed bottom-0 left-0 right-0 flex z-50'
           style={{
             background: '#000d0b',
-            borderColor: 'rgba(64,255,225,0.10)',
+            borderTop: '1px solid rgba(255,255,255,0.06)',
             paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
           }}
         >
@@ -453,12 +440,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={href}
                 href={href}
-                className={clsx(
-                  'flex flex-col items-center gap-0.5 py-2 flex-1 text-[10px] font-bold uppercase tracking-wide transition-colors duration-150',
-                )}
-                style={{ color: isActive(href) ? '#40FFE1' : '#415353' }}
+                className='flex flex-col items-center gap-0.5 py-2 flex-1 text-[10px] font-bold uppercase tracking-wide transition-colors'
+                style={{ color: active ? '#40FFE1' : 'rgba(255,255,255,0.30)' }}
               >
-                <Icon size={19} strokeWidth={active ? 2.5 : 1.8} />
+                <Icon size={18} strokeWidth={active ? 2.5 : 1.7} />
                 <span>{label}</span>
               </Link>
             );

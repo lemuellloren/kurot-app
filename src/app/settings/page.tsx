@@ -5,19 +5,35 @@ import { formatCurrency } from '@/lib/utils';
 import dynamic from 'next/dynamic';
 import HeroCard from '@/components/HeroCard';
 import Modal from '@/components/Modal';
-import { Plus, Trash2, RefreshCw, Bell, BellOff, User } from 'lucide-react';
+import {
+  Plus,
+  Trash2,
+  RefreshCw,
+  Bell,
+  BellOff,
+  User,
+  Sun,
+  Moon,
+  Monitor,
+} from 'lucide-react';
+import clsx from 'clsx';
+import Image from 'next/image';
 
 const DataPortability = dynamic(() => import('@/components/DataPortability'), {
   ssr: false,
   loading: () => (
     <div className='card p-4 animate-pulse'>
-      <div className='h-4 bg-green-100 rounded w-1/2 mb-2' />
-      <div className='h-3 bg-green-50 rounded w-3/4' />
+      <div
+        className='h-4 rounded-lg w-1/2 mb-2'
+        style={{ background: 'var(--bg-input)' }}
+      />
+      <div
+        className='h-3 rounded-lg w-3/4'
+        style={{ background: 'var(--bg-input)' }}
+      />
     </div>
   ),
 });
-import clsx from 'clsx';
-import Image from 'next/image';
 
 type Tab = 'profile' | 'budgets' | 'recurring' | 'nudges';
 
@@ -64,21 +80,31 @@ export default function SettingsPage() {
 
   return (
     <>
-      <div className='p-3.5 space-y-3'>
+      <div className='p-4 space-y-4 lg:p-0 lg:space-y-5'>
         <HeroCard eyebrow='Settings' title='Customize Kurot' />
 
-        {/* Tabs */}
-        <div className='grid grid-cols-4 gap-1 bg-green-100 rounded-md p-1'>
+        {/* Tab bar */}
+        <div
+          className='flex rounded-xl p-1 gap-1'
+          style={{
+            background: 'var(--bg-card-alt)',
+            border: '1px solid var(--border-default)',
+          }}
+        >
           {TABS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={clsx(
-                'py-2 text-[11px] font-bold rounded-md transition-all leading-tight',
+              className='flex-1 py-2 text-[11px] font-bold rounded-lg transition-all leading-tight'
+              style={
                 tab === t.key
-                  ? 'bg-white text-green-800 shadow-sm'
-                  : 'text-green-700/55',
-              )}
+                  ? {
+                      background: 'var(--bg-card)',
+                      color: 'var(--text-primary)',
+                      boxShadow: 'var(--shadow-sm)',
+                    }
+                  : { color: 'var(--text-muted)' }
+              }
             >
               {t.label}
             </button>
@@ -87,105 +113,135 @@ export default function SettingsPage() {
 
         {/* ── Profile ── */}
         {tab === 'profile' && (
-          <div className='card p-4 space-y-3'>
-            <div className='flex items-center gap-3 mb-1'>
-              <div className='w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0'>
-                <User size={18} className='text-green-700' />
+          <div className='space-y-3'>
+            <div className='card p-4'>
+              <div className='flex items-center gap-3 mb-4'>
+                <div
+                  className='w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0'
+                  style={{
+                    background: 'var(--brand-dim)',
+                    color: 'var(--brand)',
+                  }}
+                >
+                  {localName ? (
+                    localName[0].toUpperCase()
+                  ) : (
+                    <User size={20} style={{ color: 'var(--brand)' }} />
+                  )}
+                </div>
+                <div>
+                  <p
+                    className='text-base font-bold'
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    {localName || 'Your name'}
+                  </p>
+                  <p
+                    className='text-xs mt-0.5'
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Personal profile
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className='text-sm font-bold text-green-900'>
-                  {localName || 'Your name'}
-                </p>
-                <p className='text-xs text-green-700/50'>Personal profile</p>
+              <div className='space-y-3'>
+                <div>
+                  <label className='label'>Your first name</label>
+                  <input
+                    className='input'
+                    placeholder='e.g. Maria'
+                    value={localName}
+                    onChange={(e) => setLocalName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className='label'>Monthly income</label>
+                  <input
+                    className='input'
+                    type='number'
+                    inputMode='numeric'
+                    value={localIncome}
+                    onChange={(e) => setLocalIncome(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className='label'>Currency</label>
+                  <select
+                    className='input'
+                    value={localCurrency}
+                    onChange={(e) => setLocalCurrency(e.target.value)}
+                  >
+                    {[
+                      ['₱', 'Philippine Peso'],
+                      ['$', 'US Dollar'],
+                      ['€', 'Euro'],
+                      ['₩', 'Korean Won'],
+                      ['¥', 'Japanese Yen'],
+                      ['£', 'British Pound'],
+                    ].map(([s, l]) => (
+                      <option key={s} value={s}>
+                        {s} {l}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            </div>
-            <div>
-              <label className='label'>Your first name</label>
-              <input
-                className='input'
-                placeholder='e.g. Maria'
-                value={localName}
-                onChange={(e) => setLocalName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className='label'>Monthly income</label>
-              <input
-                className='input'
-                type='number'
-                inputMode='numeric'
-                value={localIncome}
-                onChange={(e) => setLocalIncome(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className='label'>Currency</label>
-              <select
-                className='input'
-                value={localCurrency}
-                onChange={(e) => setLocalCurrency(e.target.value)}
+              <button
+                onClick={handleSave}
+                className={clsx(
+                  'btn-primary w-full h-11 mt-4 transition-all',
+                  saved && 'opacity-80',
+                )}
               >
-                {[
-                  ['₱', 'Philippine Peso'],
-                  ['$', 'US Dollar'],
-                  ['€', 'Euro'],
-                  ['₩', 'Korean Won'],
-                  ['¥', 'Japanese Yen'],
-                  ['£', 'British Pound'],
-                ].map(([s, l]) => (
-                  <option key={s} value={s}>
-                    {s} {l}
-                  </option>
-                ))}
-              </select>
+                {saved ? '✓ Saved!' : 'Save changes'}
+              </button>
             </div>
-            <div>
-              <label className='label'>Appearance</label>
+
+            <div className='card p-4'>
+              <p className='section-title mb-3'>Appearance</p>
               <div className='grid grid-cols-3 gap-2'>
                 {(
                   [
-                    { key: 'light', label: 'Light', icon: '☀️' },
-                    { key: 'dark', label: 'Dark', icon: '🌙' },
-                    { key: 'system', label: 'System', icon: '💻' },
+                    { key: 'light', label: 'Light', Icon: Sun },
+                    { key: 'dark', label: 'Dark', Icon: Moon },
+                    { key: 'system', label: 'System', Icon: Monitor },
                   ] as const
                 ).map((opt) => (
                   <button
                     key={opt.key}
                     onClick={() => store.setTheme(opt.key)}
-                    className={clsx(
-                      'flex flex-col items-center gap-1.5 py-3 rounded-md border text-xs font-bold transition-all',
-                      theme === opt.key
-                        ? 'text-white border-transparent'
-                        : 'border-green-800/20 text-green-700/70 hover:border-green-800/40',
-                    )}
+                    className='flex flex-col items-center gap-2 py-3.5 rounded-xl border text-xs font-bold transition-all'
                     style={
-                      theme === opt.key ? { background: 'var(--brand)' } : {}
+                      theme === opt.key
+                        ? {
+                            background: 'var(--brand-dim)',
+                            borderColor: 'var(--brand)',
+                            color: 'var(--brand)',
+                          }
+                        : {
+                            borderColor: 'var(--border-default)',
+                            color: 'var(--text-muted)',
+                          }
                     }
                   >
-                    <span className='text-xl'>{opt.icon}</span>
+                    <opt.Icon size={18} />
                     {opt.label}
                   </button>
                 ))}
               </div>
             </div>
-            <button
-              onClick={handleSave}
-              className={clsx(
-                'btn-primary w-full h-11 mt-1 transition-all',
-                saved && 'bg-green-600',
-              )}
-            >
-              {saved ? '✓ Saved!' : 'Save changes'}
-            </button>
           </div>
         )}
 
-        {/* ── Category budgets ── */}
+        {/* ── Budgets ── */}
         {tab === 'budgets' && (
           <div className='space-y-2'>
-            <p className='text-xs text-green-700/50 px-1 leading-relaxed'>
-              Set a spending limit per category. You'll get a smart nudge when
-              you're getting close.
+            <p
+              className='text-xs px-0.5 leading-relaxed'
+              style={{ color: 'var(--text-muted)' }}
+            >
+              Set a spending limit per category. You&apos;ll get a smart nudge
+              when you&apos;re getting close.
             </p>
             {CATEGORIES.map((cat) => (
               <CategoryBudgetRow
@@ -201,25 +257,28 @@ export default function SettingsPage() {
         {/* ── Recurring ── */}
         {tab === 'recurring' && (
           <div className='space-y-2'>
-            <div className='flex justify-between items-center px-1'>
-              <p className='text-xs text-green-700/50'>
+            <div className='flex justify-between items-center'>
+              <p className='text-xs' style={{ color: 'var(--text-muted)' }}>
                 Income and expenses that repeat automatically.
               </p>
               <button
                 onClick={() => setShowAddRecurring(true)}
-                className='btn-secondary text-xs py-1.5 px-3 flex items-center gap-1 flex-shrink-0 ml-2'
+                className='btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 flex-shrink-0 ml-2'
               >
-                <Plus size={13} /> Add
+                <Plus size={12} /> Add
               </button>
             </div>
-
             {recurringEntries.length === 0 ? (
-              <div className='card p-6 text-center'>
+              <div className='card p-8 text-center'>
                 <RefreshCw
-                  size={28}
-                  className='text-green-700/20 mx-auto mb-2'
+                  size={26}
+                  className='mx-auto mb-2'
+                  style={{ color: 'var(--text-muted)' }}
                 />
-                <p className='text-sm text-green-700/50'>
+                <p
+                  className='text-sm font-semibold'
+                  style={{ color: 'var(--text-muted)' }}
+                >
                   No recurring entries yet
                 </p>
               </div>
@@ -227,47 +286,60 @@ export default function SettingsPage() {
               recurringEntries.map((r) => (
                 <div key={r.id} className='card p-3.5 flex items-center gap-3'>
                   <div
-                    className={clsx(
-                      'w-9 h-9 rounded-md flex items-center justify-center flex-shrink-0',
-                      r.type === 'income' ? 'bg-green-100' : 'bg-red-50',
-                    )}
+                    className='w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0'
+                    style={{
+                      background:
+                        r.type === 'income'
+                          ? 'var(--brand-dimmer)'
+                          : 'rgba(239,68,68,0.08)',
+                    }}
                   >
                     <RefreshCw
                       size={14}
-                      className={
-                        r.type === 'income' ? 'text-green-700' : 'text-red-400'
-                      }
+                      style={{
+                        color: r.type === 'income' ? 'var(--brand)' : '#ef4444',
+                      }}
                     />
                   </div>
                   <div className='flex-1 min-w-0'>
-                    <p className='text-sm font-semibold text-green-900 truncate'>
+                    <p
+                      className='text-sm font-semibold truncate'
+                      style={{ color: 'var(--text-primary)' }}
+                    >
                       {r.name}
                     </p>
-                    <p className='text-xs text-green-700/50 mt-0.5 capitalize'>
+                    <p
+                      className='text-xs mt-0.5 capitalize'
+                      style={{ color: 'var(--text-muted)' }}
+                    >
                       {r.type} · {r.frequency} · {fp(r.amount)}
                     </p>
-                    <p className='text-[10px] text-green-700/35 mt-0.5'>
+                    <p
+                      className='text-[10px] mt-0.5'
+                      style={{ color: 'var(--text-muted)' }}
+                    >
                       Next: {r.nextDue}
                     </p>
                   </div>
                   <div className='flex items-center gap-2 flex-shrink-0'>
-                    {/* Toggle */}
                     <button
                       onClick={() => store.toggleRecurring(r.id)}
-                      className={clsx(
-                        'w-9 h-5 rounded-full transition-colors relative',
-                        r.active ? 'bg-green-800' : 'bg-green-800/20',
-                      )}
+                      className='relative rounded-full transition-colors flex-shrink-0'
+                      style={{
+                        background: r.active
+                          ? 'var(--brand)'
+                          : 'var(--bg-input)',
+                        width: 36,
+                        height: 20,
+                      }}
                     >
                       <span
-                        className={clsx(
-                          'w-3.5 h-3.5 bg-white rounded-full absolute top-[3px] transition-all',
-                          r.active ? 'left-[18px]' : 'left-[3px]',
-                        )}
+                        className='absolute top-[3px] w-3.5 h-3.5 bg-white rounded-full transition-all'
+                        style={{ left: r.active ? 18 : 3 }}
                       />
                     </button>
                     <button onClick={() => store.removeRecurring(r.id)}>
-                      <Trash2 size={14} className='text-red-400' />
+                      <Trash2 size={14} style={{ color: '#ef4444' }} />
                     </button>
                   </div>
                 </div>
@@ -279,8 +351,8 @@ export default function SettingsPage() {
         {/* ── Nudges ── */}
         {tab === 'nudges' && (
           <div className='space-y-2'>
-            <div className='flex justify-between items-center px-1'>
-              <p className='text-xs text-green-700/50'>
+            <div className='flex justify-between items-center'>
+              <p className='text-xs' style={{ color: 'var(--text-muted)' }}>
                 Smart alerts about your finances.
               </p>
               <button
@@ -290,13 +362,24 @@ export default function SettingsPage() {
                 Refresh
               </button>
             </div>
-
             {nudges.length === 0 ? (
-              <div className='card p-6 text-center'>
-                <Bell size={28} className='text-green-700/20 mx-auto mb-2' />
-                <p className='text-sm text-green-700/50'>No nudges right now</p>
-                <p className='text-xs text-green-700/35 mt-1'>
-                  You're all caught up!
+              <div className='card p-8 text-center'>
+                <Bell
+                  size={26}
+                  className='mx-auto mb-2'
+                  style={{ color: 'var(--text-muted)' }}
+                />
+                <p
+                  className='text-sm font-semibold'
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  No nudges right now
+                </p>
+                <p
+                  className='text-xs mt-1'
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  You&apos;re all caught up!
                 </p>
               </div>
             ) : (
@@ -308,7 +391,7 @@ export default function SettingsPage() {
                     n.read && 'opacity-40',
                   )}
                 >
-                  <span className='text-base mt-0.5 flex-shrink-0'>
+                  <span className='text-base flex-shrink-0 mt-0.5'>
                     {n.severity === 'danger'
                       ? '🔴'
                       : n.severity === 'warning'
@@ -316,10 +399,16 @@ export default function SettingsPage() {
                         : '🔵'}
                   </span>
                   <div className='flex-1 min-w-0'>
-                    <p className='text-xs text-green-900 leading-relaxed'>
+                    <p
+                      className='text-xs leading-relaxed'
+                      style={{ color: 'var(--text-primary)' }}
+                    >
                       {n.message}
                     </p>
-                    <p className='text-[10px] text-green-700/35 mt-1'>
+                    <p
+                      className='text-[10px] mt-1'
+                      style={{ color: 'var(--text-muted)' }}
+                    >
                       {n.date}
                     </p>
                   </div>
@@ -328,17 +417,20 @@ export default function SettingsPage() {
                       onClick={() => store.markNudgeRead(n.id)}
                       className='flex-shrink-0'
                     >
-                      <BellOff size={14} className='text-green-700/40' />
+                      <BellOff
+                        size={14}
+                        style={{ color: 'var(--text-muted)' }}
+                      />
                     </button>
                   )}
                 </div>
               ))
             )}
-
             {nudges.some((n) => n.read) && (
               <button
                 onClick={store.clearReadNudges}
-                className='text-xs text-green-700/50 font-semibold w-full text-center py-2'
+                className='text-xs font-semibold w-full text-center py-2'
+                style={{ color: 'var(--text-muted)' }}
               >
                 Clear read nudges
               </button>
@@ -346,35 +438,48 @@ export default function SettingsPage() {
           </div>
         )}
 
-        {/* Data portability — always visible regardless of tab */}
         <DataPortability />
 
-        {/* About section always shown at bottom */}
-        <div className='card p-4 mt-2'>
+        {/* About */}
+        <div className='card p-4'>
           <div className='flex items-center gap-3 mb-3'>
-            <div className='w-12 h-12 rounded-md  flex items-center justify-center flex-shrink-0'>
-              <Image
-                src='/logo-icon.svg'
-                alt='Kurot'
-                width={52}
-                height={52}
-                className='rounded-md'
-              />
+            <div
+              className='w-12 h-12 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0'
+              style={{
+                background: 'var(--bg-card-alt)',
+                border: '1px solid var(--border-default)',
+              }}
+            >
+              <Image src='/logo-icon.svg' alt='Kurot' width={36} height={36} />
             </div>
             <div>
-              <p className='font-serif text-xl text-green-900'>Kurot</p>
-              <p className='text-xs text-green-700/45'>
+              <p
+                className='font-serif text-lg font-semibold'
+                style={{ color: 'var(--text-primary)' }}
+              >
+                Kurot
+              </p>
+              <p
+                className='text-xs mt-0.5'
+                style={{ color: 'var(--text-muted)' }}
+              >
                 Version 1.0.0 · Offline · Open source
               </p>
             </div>
           </div>
-          <p className='text-xs text-green-700/60 leading-relaxed'>
+          <p
+            className='text-xs leading-relaxed'
+            style={{ color: 'var(--text-muted)' }}
+          >
             Inspired by the Filipino tradition of <em>magkurot ng pera</em> —
             setting aside small portions of money for specific needs. All data
             stays on your device.
           </p>
-          <p className='text-xs text-green-700/40 italic mt-2'>
-            "Set aside a little for every need."
+          <p
+            className='text-xs italic mt-2'
+            style={{ color: 'var(--text-muted)' }}
+          >
+            &ldquo;Set aside a little for every need.&rdquo;
           </p>
         </div>
       </div>
@@ -392,45 +497,45 @@ function CategoryBudgetRow({ cat, existing, currency }: any) {
   const [alertAt, setAlertAt] = useState(String(existing?.alertAt ?? '80'));
   const [editing, setEditing] = useState(false);
 
-  const handleSave = () => {
-    const l = parseFloat(limit);
-    const a = parseFloat(alertAt);
-    if (!isNaN(l) && l > 0) {
-      store.setCategoryBudget(
-        cat,
-        l,
-        isNaN(a) ? 80 : Math.min(100, Math.max(1, a)),
-      );
-      setEditing(false);
-    }
-  };
-
   return (
     <div className='card p-3.5'>
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-2.5'>
           <span className='text-xl'>{CAT_ICONS[cat]}</span>
           <div>
-            <p className='text-sm font-semibold text-green-900'>{cat}</p>
+            <p
+              className='text-sm font-semibold'
+              style={{ color: 'var(--text-primary)' }}
+            >
+              {cat}
+            </p>
             {existing && !editing && (
-              <p className='text-xs text-green-700/50 mt-0.5'>
+              <p
+                className='text-xs mt-0.5'
+                style={{ color: 'var(--text-muted)' }}
+              >
                 Limit: {formatCurrency(existing.limit, currency)} · Alert at{' '}
                 {existing.alertAt}%
               </p>
             )}
             {!existing && !editing && (
-              <p className='text-xs text-green-700/35 mt-0.5'>No limit set</p>
+              <p
+                className='text-xs mt-0.5'
+                style={{ color: 'var(--text-muted)' }}
+              >
+                No limit set
+              </p>
             )}
           </div>
         </div>
         <button
           onClick={() => setEditing((v) => !v)}
-          className='text-xs text-green-700 font-semibold px-3 py-1.5 bg-green-50 rounded-md'
+          className='flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg'
+          style={{ background: 'var(--brand-dimmer)', color: 'var(--brand)' }}
         >
           {editing ? 'Cancel' : existing ? 'Edit' : 'Set limit'}
         </button>
       </div>
-
       {editing && (
         <div className='mt-3 space-y-2'>
           <div className='grid grid-cols-2 gap-2'>
@@ -465,13 +570,28 @@ function CategoryBudgetRow({ cat, existing, currency }: any) {
                   store.removeCategoryBudget(cat);
                   setEditing(false);
                 }}
-                className='h-9 px-3 text-xs text-red-400 font-semibold border border-red-200 rounded-md'
+                className='h-9 px-3 text-xs font-semibold rounded-xl border'
+                style={{
+                  color: '#ef4444',
+                  borderColor: 'rgba(239,68,68,0.20)',
+                }}
               >
                 Remove
               </button>
             )}
             <button
-              onClick={handleSave}
+              onClick={() => {
+                const l = parseFloat(limit);
+                const a = parseFloat(alertAt);
+                if (!isNaN(l) && l > 0) {
+                  store.setCategoryBudget(
+                    cat,
+                    l,
+                    isNaN(a) ? 80 : Math.min(100, Math.max(1, a)),
+                  );
+                  setEditing(false);
+                }
+              }}
               className='btn-primary flex-1 h-9 text-xs'
             >
               Save limit
@@ -510,7 +630,10 @@ function AddRecurringModal({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal onClose={onClose}>
-      <h3 className='font-serif text-xl text-green-900 mb-4'>
+      <h3
+        className='font-serif text-lg font-semibold mb-4'
+        style={{ color: 'var(--text-primary)' }}
+      >
         New Recurring Entry
       </h3>
       <div className='space-y-3'>
@@ -519,12 +642,19 @@ function AddRecurringModal({ onClose }: { onClose: () => void }) {
             <button
               key={t}
               onClick={() => setType(t)}
-              className={clsx(
-                'flex-1 py-2.5 text-xs font-bold rounded-md border transition-all capitalize',
+              className='flex-1 py-2.5 text-xs font-bold rounded-xl border transition-all capitalize'
+              style={
                 type === t
-                  ? 'bg-green-800 text-white border-green-800'
-                  : 'border-green-800/20 text-green-700/70',
-              )}
+                  ? {
+                      background: 'var(--brand)',
+                      color: 'var(--brand-text)',
+                      borderColor: 'var(--brand)',
+                    }
+                  : {
+                      borderColor: 'var(--border-strong)',
+                      color: 'var(--text-muted)',
+                    }
+              }
             >
               {t}
             </button>
@@ -589,11 +719,15 @@ function AddRecurringModal({ onClose }: { onClose: () => void }) {
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
+          className='h-11 px-5 text-sm font-semibold rounded-xl border'
+          style={{
+            borderColor: 'var(--border-strong)',
+            color: 'var(--text-muted)',
+          }}
         >
           Cancel
         </button>
-        <button onClick={submit} className='btn-primary flex-1 h-12'>
+        <button onClick={submit} className='btn-primary flex-1 h-11'>
           Add recurring
         </button>
       </div>

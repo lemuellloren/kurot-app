@@ -10,10 +10,11 @@ import {
   Trash2,
   Bell,
   X,
-  TrendingUp,
   TrendingDown,
-  Target,
   RefreshCw,
+  Target,
+  ArrowUpRight,
+  Wallet,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -41,12 +42,11 @@ export default function Home() {
   useEffect(() => {
     store.generateNudges();
   }, []);
-
   useEffect(() => {
     const h = new Date().getHours();
-    const timeOfDay =
+    const tod =
       h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
-    setGreeting(userName ? `${timeOfDay}, ${userName}` : timeOfDay);
+    setGreeting(userName ? `${tod}, ${userName}!` : `${tod}!`);
     const months = [
       'January',
       'February',
@@ -70,12 +70,14 @@ export default function Home() {
     (s, e) => s + e.txns.reduce((a, t) => a + t.amt, 0),
     0,
   );
+  const totalLeft = income - totalSpent;
   const allocPct = pctOf(totalBudget, income);
+  const savingsPct = Math.max(0, pctOf(totalLeft, income));
   const unread = nudges.filter((n) => !n.read);
 
   const statusLabel =
     totalSpent > totalBudget
-      ? 'Over Budget!'
+      ? 'Over Budget'
       : totalSpent / (totalBudget || 1) > 0.8
         ? 'Watch Spending'
         : 'On Track';
@@ -86,427 +88,315 @@ export default function Home() {
         ? 'pill-warn'
         : 'pill-ok';
 
-  const activeGoals = goals.filter((g) => g.currentAmount < g.targetAmount);
-  const activeDebts = debts.filter((d) => d.status === 'active');
-  const upcomingRecurring = recurringEntries.filter((r) => {
-    if (!r.active) return false;
-    const days = Math.ceil(
-      (new Date(r.nextDue).getTime() - Date.now()) / 86400000,
-    );
-    return days <= 7 && days >= 0;
-  });
+  const activeGoals = goals
+    .filter((g) => g.currentAmount < g.targetAmount)
+    .slice(0, 2);
+  const activeDebts = debts.filter((d) => d.status === 'active').slice(0, 2);
+  const upcomingRec = recurringEntries
+    .filter((r) => {
+      if (!r.active) return false;
+      const days = Math.ceil(
+        (new Date(r.nextDue).getTime() - Date.now()) / 86400000,
+      );
+      return days <= 7 && days >= 0;
+    })
+    .slice(0, 3);
 
   return (
     <>
-      <div className='p-3.5 lg:p-0 space-y-3 lg:space-y-6'>
-        {/* ── DESKTOP: Hero row ── */}
-        <div className='hidden lg:block'>
-          {/* Nudge bar — mobile only, desktop handled by AppShell bell */}
-          {unread.length > 0 && (
-            <button
-              onClick={() => setShowNudges(true)}
-              className='lg:hidden w-full flex items-center gap-2 rounded-md px-4 py-2.5 text-left border mb-4'
-              style={{
-                background: 'rgba(64,255,225,0.10)',
-                borderColor: 'rgba(64,255,225,0.22)',
-              }}
-            >
-              <Bell
-                size={14}
-                className='flex-shrink-0'
-                style={{ color: 'var(--brand)' }}
-              />
-              <span className='text-xs font-semibold text-green-900 flex-1'>
-                {unread.length} smart nudge{unread.length > 1 ? 's' : ''} — tap
-                to review
-              </span>
-              <ChevronDown size={13} className='text-green-700/50' />
-            </button>
-          )}
-
-          {/* Desktop summary cards */}
-          <div className='grid grid-cols-4 gap-4 mb-6'>
-            {[
-              {
-                label: 'Monthly Income',
-                value: fp(income),
-                sub: currentMonth,
-                color: 'text-green-900',
-                bg: 'bg-green-800',
-                light: false,
-              },
-              {
-                label: 'Total Budgeted',
-                value: fp(totalBudget),
-                sub: `${allocPct}% of income`,
-                color: 'text-green-900',
-                bg: 'bg-white',
-                light: true,
-              },
-              {
-                label: 'Total Spent',
-                value: fp(totalSpent),
-                sub: `${pctOf(totalSpent, totalBudget)}% of budget`,
-                color: 'text-red-600',
-                bg: 'bg-white',
-                light: true,
-              },
-              {
-                label: 'Remaining',
-                value: fp(Math.max(0, income - totalSpent)),
-                sub: statusLabel,
-                color:
-                  income - totalSpent < 0 ? 'text-red-600' : 'text-green-700',
-                bg: 'bg-white',
-                light: true,
-              },
-            ].map((m) => (
-              <div
-                key={m.label}
-                className={clsx('rounded-md p-5 shadow-card', m.bg)}
-              >
-                <p
-                  className={clsx(
-                    'text-xs font-bold uppercase tracking-wide mb-2',
-                    m.light ? 'text-green-700/50' : 'text-white/60',
-                  )}
-                >
-                  {m.label}
-                </p>
-                <p
-                  className={clsx(
-                    'text-2xl font-bold font-serif leading-tight',
-                    m.light ? m.color : 'text-white',
-                  )}
-                >
-                  {m.value}
-                </p>
-                <p
-                  className={clsx(
-                    'text-xs mt-1',
-                    m.light ? 'text-green-700/40' : 'text-white/50',
-                  )}
-                >
-                  {m.sub}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Desktop two-column layout */}
-          <div className='grid grid-cols-3 gap-5'>
-            {/* Left col: Envelopes (wider) */}
-            <div className='col-span-2 space-y-3'>
-              <div className='flex justify-between items-center'>
-                <h2 className='font-serif text-lg text-green-900'>
-                  My Envelopes
-                </h2>
-                <button
-                  onClick={() => setShowAdd(true)}
-                  className='btn-secondary text-xs py-1.5 px-3 flex items-center gap-1'
-                >
-                  <Plus size={13} /> New Envelope
-                </button>
-              </div>
-
-              {/* Allocation bar */}
-              <div className='card px-4 py-3'>
-                <div className='flex justify-between text-xs text-green-700/60 font-semibold mb-2'>
-                  <span>Income allocation</span>
-                  <span>{allocPct}% allocated</span>
-                </div>
-                <div className='h-1.5 bg-green-100 rounded-full overflow-hidden'>
-                  <div
-                    className='h-full bg-green-800 rounded-full transition-all duration-500'
-                    style={{ width: `${allocPct}%` }}
-                  />
-                </div>
-              </div>
-
-              <div className='space-y-2'>
-                {envelopes.map((env) => (
-                  <EnvelopeCard
-                    key={env.id}
-                    env={env}
-                    fp={fp}
-                    currency={currency}
-                    expanded={expandedEnvelopeId === env.id}
-                    txnDesc={txnDesc}
-                    txnAmt={txnAmt}
-                    setTxnDesc={setTxnDesc}
-                    setTxnAmt={setTxnAmt}
-                    store={store}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Right col: Quick overview widgets */}
-            <div className='space-y-4'>
-              {/* Goals snapshot */}
-              <div className='card p-4'>
-                <div className='flex justify-between items-center mb-3'>
-                  <p className='font-semibold text-green-900 text-sm flex items-center gap-2'>
-                    <Target size={14} className='text-green-700' /> Goals
-                  </p>
-                  <a
-                    href='/goals'
-                    className='text-xs text-green-700 font-semibold hover:underline'
-                  >
-                    View all
-                  </a>
-                </div>
-                {activeGoals.length === 0 ? (
-                  <p className='text-xs text-green-700/40'>No active goals</p>
-                ) : (
-                  activeGoals.slice(0, 3).map((g) => {
-                    const pct = pctOf(g.currentAmount, g.targetAmount);
-                    return (
-                      <div key={g.id} className='mb-3 last:mb-0'>
-                        <div className='flex justify-between mb-1'>
-                          <span className='text-xs font-medium text-green-900 truncate'>
-                            {g.name}
-                          </span>
-                          <span className='text-xs text-green-700/50 ml-2 flex-shrink-0'>
-                            {pct}%
-                          </span>
-                        </div>
-                        <div className='h-1.5 bg-green-100 rounded-full overflow-hidden'>
-                          <div
-                            className='h-full rounded-full'
-                            style={{ width: `${pct}%`, background: g.color }}
-                          />
-                        </div>
-                        <div className='flex justify-between mt-0.5'>
-                          <span className='text-[10px] text-green-700/40'>
-                            {fp(g.currentAmount)}
-                          </span>
-                          <span className='text-[10px] text-green-700/40'>
-                            {fp(g.targetAmount)}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-
-              {/* Debt snapshot */}
-              <div className='card p-4'>
-                <div className='flex justify-between items-center mb-3'>
-                  <p className='font-semibold text-green-900 text-sm flex items-center gap-2'>
-                    <TrendingDown size={14} className='text-red-500' /> Debt
-                  </p>
-                  <a
-                    href='/debt'
-                    className='text-xs text-green-700 font-semibold hover:underline'
-                  >
-                    View all
-                  </a>
-                </div>
-                {activeDebts.length === 0 ? (
-                  <p className='text-xs text-green-700/40'>No active debts</p>
-                ) : (
-                  activeDebts.slice(0, 3).map((d) => {
-                    const pct = pctOf(
-                      d.totalAmount - d.remainingAmount,
-                      d.totalAmount,
-                    );
-                    return (
-                      <div key={d.id} className='mb-3 last:mb-0'>
-                        <div className='flex justify-between mb-1'>
-                          <span className='text-xs font-medium text-green-900 truncate'>
-                            {d.name}
-                          </span>
-                          <span
-                            className={clsx(
-                              'text-xs ml-2 flex-shrink-0 font-semibold',
-                              d.type === 'owe'
-                                ? 'text-red-500'
-                                : 'text-green-700',
-                            )}
-                          >
-                            {fp(d.remainingAmount)}
-                          </span>
-                        </div>
-                        <div className='h-1.5 bg-green-100 rounded-full overflow-hidden'>
-                          <div
-                            className='h-full rounded-full'
-                            style={{
-                              width: `${pct}%`,
-                              background:
-                                d.type === 'owe' ? '#dc2626' : '#259583',
-                            }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-
-              {/* Upcoming recurring */}
-              <div className='card p-4'>
-                <div className='flex justify-between items-center mb-3'>
-                  <p className='font-semibold text-green-900 text-sm flex items-center gap-2'>
-                    <RefreshCw size={14} className='text-green-700' /> Upcoming
-                  </p>
-                  <a
-                    href='/settings'
-                    className='text-xs text-green-700 font-semibold hover:underline'
-                  >
-                    Manage
-                  </a>
-                </div>
-                {upcomingRecurring.length === 0 ? (
-                  <p className='text-xs text-green-700/40'>
-                    Nothing due this week
-                  </p>
-                ) : (
-                  upcomingRecurring.slice(0, 4).map((r) => {
-                    const days = Math.ceil(
-                      (new Date(r.nextDue).getTime() - Date.now()) / 86400000,
-                    );
-                    return (
-                      <div
-                        key={r.id}
-                        className='flex justify-between items-center mb-2 last:mb-0'
-                      >
-                        <div className='flex items-center gap-2 min-w-0'>
-                          <div
-                            className={clsx(
-                              'w-1.5 h-1.5 rounded-full flex-shrink-0',
-                              r.type === 'income'
-                                ? 'bg-green-500'
-                                : 'bg-red-400',
-                            )}
-                          />
-                          <span className='text-xs text-green-900 truncate'>
-                            {r.name}
-                          </span>
-                        </div>
-                        <span
-                          className={clsx(
-                            'text-[11px] font-semibold ml-2 flex-shrink-0',
-                            days === 0 ? 'text-red-500' : 'text-amber-600',
-                          )}
-                        >
-                          {days === 0 ? 'Today' : `${days}d`}
-                        </span>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── MOBILE LAYOUT (unchanged) ── */}
+      <div className='p-4 space-y-4 lg:p-0 lg:space-y-5'>
+        {/* ── MOBILE ── */}
         <div className='lg:hidden space-y-3'>
-          {unread.length > 0 && (
-            <button
-              onClick={() => setShowNudges(true)}
-              className='w-full flex items-center gap-2 rounded-md px-4 py-2.5 text-left border'
-              style={{
-                background: 'rgba(64,255,225,0.10)',
-                borderColor: 'rgba(64,255,225,0.25)',
-              }}
-            >
-              <Bell
-                size={14}
-                className='flex-shrink-0'
-                style={{ color: 'var(--brand)' }}
-              />
-              <span className='text-xs font-semibold text-green-900 flex-1'>
-                {unread.length} smart nudge{unread.length > 1 ? 's' : ''} need
-                your attention
-              </span>
-              <ChevronDown size={13} className='text-green-700/50' />
-            </button>
-          )}
-
-          {/* Mobile Hero */}
-          <div className='bg-green-800 rounded-md p-5 relative overflow-hidden'>
-            <div className='absolute -top-8 -right-8 w-36 h-36 bg-white/[0.04] rounded-full pointer-events-none' />
-            <div className='absolute -bottom-10 -left-4 w-24 h-24 bg-white/[0.03] rounded-full pointer-events-none' />
-            <div className='relative z-10'>
+          <div className='flex justify-between items-start'>
+            <div>
               <p
-                className='text-white/50 text-[11px] tracking-widest uppercase mb-1'
+                className='text-xs font-semibold'
+                style={{ color: 'var(--text-muted)' }}
                 suppressHydrationWarning
               >
                 {currentMonth}
               </p>
               <p
-                className='text-white/70 text-sm font-medium mb-1'
+                className='text-lg font-bold mt-0.5'
+                style={{ color: 'var(--text-primary)' }}
                 suppressHydrationWarning
               >
-                {greeting} 👋
-              </p>
-              <p className='font-serif text-[36px] text-white leading-none tracking-tight'>
-                {fp(income)}
-              </p>
-              <p className='text-white/40 text-xs mt-2 italic'>
-                set aside a little for every need
+                {greeting}
               </p>
             </div>
-            <span className={clsx('pill absolute top-5 right-5', statusCls)}>
-              {statusLabel}
-            </span>
+            {unread.length > 0 && (
+              <button
+                onClick={() => setShowNudges(true)}
+                className='relative w-9 h-9 rounded-xl flex items-center justify-center'
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-card)',
+                }}
+              >
+                <Bell size={16} style={{ color: 'var(--brand)' }} />
+                <span className='absolute -top-1 -right-1 badge'>
+                  {unread.length}
+                </span>
+              </button>
+            )}
           </div>
 
-          {/* Mobile metrics */}
-          <div className='grid grid-cols-3 gap-2'>
+          {/* Mobile hero balance card */}
+          <div
+            className='rounded-2xl p-5 relative overflow-hidden'
+            style={{
+              background:
+                'linear-gradient(135deg, #000d0b 0%, #001a16 50%, #002a22 100%)',
+              border: '1px solid rgba(64,255,225,0.12)',
+            }}
+          >
+            <div
+              className='absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-20 blur-2xl pointer-events-none'
+              style={{ background: 'var(--brand)' }}
+            />
+            <div className='relative z-10'>
+              <div className='flex justify-between items-start mb-4'>
+                <div>
+                  <p className='text-xs font-medium text-white/50 mb-1'>
+                    Monthly Income
+                  </p>
+                  <p className='font-serif text-3xl font-bold text-white leading-none'>
+                    {fp(income)}
+                  </p>
+                </div>
+                <span className={clsx('pill', statusCls)}>{statusLabel}</span>
+              </div>
+              <div className='grid grid-cols-3 gap-2'>
+                {[
+                  {
+                    label: 'Budgeted',
+                    val: fp(totalBudget),
+                    col: 'rgba(255,255,255,0.75)',
+                  },
+                  { label: 'Spent', val: fp(totalSpent), col: '#fca5a5' },
+                  {
+                    label: 'Left',
+                    val: fp(Math.max(0, totalLeft)),
+                    col: '#40FFE1',
+                  },
+                ].map((s) => (
+                  <div
+                    key={s.label}
+                    className='rounded-xl p-2.5'
+                    style={{ background: 'rgba(255,255,255,0.05)' }}
+                  >
+                    <p className='text-[10px] text-white/40 font-semibold uppercase tracking-wide'>
+                      {s.label}
+                    </p>
+                    <p
+                      className='text-sm font-bold mt-0.5'
+                      style={{ color: s.col }}
+                    >
+                      {s.val}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Allocation bar */}
+          <div className='card px-4 py-3'>
+            <div
+              className='flex justify-between text-xs font-semibold mb-2'
+              style={{ color: 'var(--text-muted)' }}
+            >
+              <span>Allocation</span>
+              <span>{allocPct}% of income</span>
+            </div>
+            <div
+              className='h-1.5 rounded-full overflow-hidden'
+              style={{ background: 'var(--bg-input)' }}
+            >
+              <div
+                className='h-full rounded-full transition-all duration-700'
+                style={{ width: `${allocPct}%`, background: 'var(--brand)' }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* ── DESKTOP ── */}
+        <div className='hidden lg:block space-y-5'>
+          <div className='flex justify-between items-center'>
+            <div>
+              <p
+                className='text-xs font-semibold'
+                style={{ color: 'var(--text-muted)' }}
+                suppressHydrationWarning
+              >
+                {currentMonth}
+              </p>
+              <p
+                className='font-serif text-2xl font-semibold mt-0.5'
+                style={{ color: 'var(--text-primary)' }}
+                suppressHydrationWarning
+              >
+                {greeting}
+              </p>
+            </div>
+            {unread.length > 0 && (
+              <button
+                onClick={() => setShowNudges(true)}
+                className='flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold'
+                style={{
+                  background: 'var(--brand-dim)',
+                  color: 'var(--brand)',
+                  border: '1px solid rgba(64,255,225,0.15)',
+                }}
+              >
+                <Bell size={13} /> {unread.length} nudge
+                {unread.length > 1 ? 's' : ''}
+              </button>
+            )}
+          </div>
+
+          {/* 4 stat cards */}
+          <div className='grid grid-cols-4 gap-4'>
             {[
               {
-                label: 'Budgeted',
-                value: fp(totalBudget),
-                cls: 'text-green-900',
+                label: 'Monthly Income',
+                val: fp(income),
+                sub: 'Total budget',
+                Icon: Wallet,
+                accent: true,
               },
-              { label: 'Spent', value: fp(totalSpent), cls: 'text-red-600' },
+              {
+                label: 'Budgeted',
+                val: fp(totalBudget),
+                sub: `${allocPct}% allocated`,
+                Icon: ArrowUpRight,
+                accent: false,
+              },
+              {
+                label: 'Spent',
+                val: fp(totalSpent),
+                sub: `${pctOf(totalSpent, totalBudget)}% of budget`,
+                Icon: TrendingDown,
+                accent: false,
+                danger: true,
+              },
               {
                 label: 'Remaining',
-                value: fp(Math.max(0, income - totalSpent)),
-                cls: 'text-green-700',
+                val: fp(Math.max(0, totalLeft)),
+                sub: `${savingsPct}% savings rate`,
+                Icon: Target,
+                accent: false,
+                success: true,
               },
-            ].map((m) => (
-              <div key={m.label} className='card px-3 py-2.5'>
-                <p className='text-[10px] font-bold text-green-700/50 uppercase tracking-wide mb-1'>
-                  {m.label}
-                </p>
-                <p className={clsx('text-[13px] font-bold', m.cls)}>
-                  {m.value}
-                </p>
+            ].map((s, i) => (
+              <div
+                key={i}
+                className='relative overflow-hidden rounded-xl'
+                style={s.accent ? {} : undefined}
+              >
+                {s.accent ? (
+                  <div
+                    className='absolute inset-0 rounded-xl'
+                    style={{
+                      background:
+                        'linear-gradient(135deg, #000d0b, #001a16, #002a22)',
+                      border: '1px solid rgba(64,255,225,0.12)',
+                    }}
+                  />
+                ) : null}
+                <div className={clsx('relative z-10 p-4', !s.accent && 'card')}>
+                  <div className='flex justify-between items-start mb-3'>
+                    <p
+                      className='text-xs font-semibold'
+                      style={{
+                        color: s.accent
+                          ? 'rgba(255,255,255,0.5)'
+                          : 'var(--text-muted)',
+                      }}
+                    >
+                      {s.label}
+                    </p>
+                    <div
+                      className='w-7 h-7 rounded-lg flex items-center justify-center'
+                      style={{
+                        background: s.accent
+                          ? 'rgba(64,255,225,0.12)'
+                          : 'var(--bg-card-alt)',
+                      }}
+                    >
+                      <s.Icon
+                        size={13}
+                        style={{
+                          color: s.accent
+                            ? 'var(--brand)'
+                            : 'var(--text-muted)',
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <p
+                    className='font-serif text-2xl font-bold leading-none'
+                    style={{
+                      color: s.accent
+                        ? '#fff'
+                        : s.danger
+                          ? '#ef4444'
+                          : s.success
+                            ? 'var(--brand)'
+                            : 'var(--text-primary)',
+                    }}
+                  >
+                    {s.val}
+                  </p>
+                  <p
+                    className='text-xs mt-1.5'
+                    style={{
+                      color: s.accent
+                        ? 'rgba(255,255,255,0.35)'
+                        : 'var(--text-muted)',
+                    }}
+                  >
+                    {s.sub}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
 
-          {/* Mobile alloc bar */}
-          <div className='card px-4 py-3'>
-            <div className='flex justify-between text-xs text-green-700/60 font-semibold mb-2'>
-              <span>Income allocation</span>
-              <span>{allocPct}% allocated</span>
-            </div>
-            <div className='h-1.5 bg-green-100 rounded-full overflow-hidden'>
-              <div
-                className='h-full bg-green-800 rounded-full transition-all duration-500'
-                style={{ width: `${allocPct}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Mobile envelopes */}
-          <div>
-            <div className='flex justify-between items-center mb-2.5 px-1'>
-              <span className='section-title'>My Envelopes</span>
-              <button
-                onClick={() => setShowAdd(true)}
-                className='btn-secondary text-xs py-1.5 px-3 flex items-center gap-1'
-              >
-                <Plus size={13} /> New Envelope
-              </button>
-            </div>
-            <div className='space-y-2'>
+          {/* 2+1 grid */}
+          <div className='grid grid-cols-3 gap-5'>
+            <div className='col-span-2 space-y-3'>
+              <div className='flex justify-between items-center'>
+                <p className='section-title'>My Envelopes</p>
+                <button
+                  onClick={() => setShowAdd(true)}
+                  className='btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5'
+                >
+                  <Plus size={12} /> New Envelope
+                </button>
+              </div>
+              <div className='card px-4 py-3'>
+                <div
+                  className='flex justify-between text-xs font-semibold mb-2'
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  <span>Income allocation</span>
+                  <span>{allocPct}%</span>
+                </div>
+                <div
+                  className='h-1.5 rounded-full overflow-hidden'
+                  style={{ background: 'var(--bg-input)' }}
+                >
+                  <div
+                    className='h-full rounded-full transition-all duration-700'
+                    style={{
+                      width: `${allocPct}%`,
+                      background: 'var(--brand)',
+                    }}
+                  />
+                </div>
+              </div>
               {envelopes.map((env) => (
                 <EnvelopeCard
                   key={env.id}
@@ -522,7 +412,188 @@ export default function Home() {
                 />
               ))}
             </div>
+            <div className='space-y-4'>
+              <div className='card p-4'>
+                <div className='flex justify-between items-center mb-3'>
+                  <p className='section-title'>Goals</p>
+                  <a
+                    href='/goals'
+                    className='text-xs font-semibold'
+                    style={{ color: 'var(--brand)' }}
+                  >
+                    View all
+                  </a>
+                </div>
+                {activeGoals.length === 0 ? (
+                  <p className='text-xs' style={{ color: 'var(--text-muted)' }}>
+                    No active goals
+                  </p>
+                ) : (
+                  activeGoals.map((g) => {
+                    const pct = pctOf(g.currentAmount, g.targetAmount);
+                    return (
+                      <div key={g.id} className='mb-3 last:mb-0'>
+                        <div className='flex justify-between mb-1.5'>
+                          <span
+                            className='text-xs font-semibold truncate'
+                            style={{ color: 'var(--text-primary)' }}
+                          >
+                            {g.name}
+                          </span>
+                          <span
+                            className='text-xs ml-2 flex-shrink-0'
+                            style={{ color: 'var(--text-muted)' }}
+                          >
+                            {pct}%
+                          </span>
+                        </div>
+                        <div
+                          className='h-1.5 rounded-full overflow-hidden'
+                          style={{ background: 'var(--bg-input)' }}
+                        >
+                          <div
+                            className='h-full rounded-full'
+                            style={{ width: `${pct}%`, background: g.color }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+              <div className='card p-4'>
+                <div className='flex justify-between items-center mb-3'>
+                  <p className='section-title'>Debt</p>
+                  <a
+                    href='/debt'
+                    className='text-xs font-semibold'
+                    style={{ color: 'var(--brand)' }}
+                  >
+                    View all
+                  </a>
+                </div>
+                {activeDebts.length === 0 ? (
+                  <p className='text-xs' style={{ color: 'var(--text-muted)' }}>
+                    No active debts
+                  </p>
+                ) : (
+                  activeDebts.map((d) => {
+                    const pct = pctOf(
+                      d.totalAmount - d.remainingAmount,
+                      d.totalAmount,
+                    );
+                    return (
+                      <div key={d.id} className='mb-3 last:mb-0'>
+                        <div className='flex justify-between mb-1.5'>
+                          <span
+                            className='text-xs font-semibold truncate'
+                            style={{ color: 'var(--text-primary)' }}
+                          >
+                            {d.name}
+                          </span>
+                          <span
+                            className='text-xs font-semibold ml-2 flex-shrink-0'
+                            style={{
+                              color:
+                                d.type === 'owe' ? '#ef4444' : 'var(--brand)',
+                            }}
+                          >
+                            {fp(d.remainingAmount)}
+                          </span>
+                        </div>
+                        <div
+                          className='h-1.5 rounded-full overflow-hidden'
+                          style={{ background: 'var(--bg-input)' }}
+                        >
+                          <div
+                            className='h-full rounded-full'
+                            style={{
+                              width: `${pct}%`,
+                              background:
+                                d.type === 'owe' ? '#ef4444' : 'var(--brand)',
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+              <div className='card p-4'>
+                <div className='flex justify-between items-center mb-3'>
+                  <p className='section-title'>Upcoming</p>
+                  <a
+                    href='/settings'
+                    className='text-xs font-semibold'
+                    style={{ color: 'var(--brand)' }}
+                  >
+                    Manage
+                  </a>
+                </div>
+                {upcomingRec.length === 0 ? (
+                  <p className='text-xs' style={{ color: 'var(--text-muted)' }}>
+                    Nothing due this week
+                  </p>
+                ) : (
+                  upcomingRec.map((r) => {
+                    const days = Math.ceil(
+                      (new Date(r.nextDue).getTime() - Date.now()) / 86400000,
+                    );
+                    return (
+                      <div key={r.id} className='row-item'>
+                        <div
+                          className='w-2 h-2 rounded-full flex-shrink-0'
+                          style={{
+                            background:
+                              r.type === 'income' ? 'var(--brand)' : '#ef4444',
+                          }}
+                        />
+                        <span
+                          className='text-xs flex-1 truncate'
+                          style={{ color: 'var(--text-primary)' }}
+                        >
+                          {r.name}
+                        </span>
+                        <span
+                          className='text-[11px] font-semibold flex-shrink-0'
+                          style={{ color: days === 0 ? '#ef4444' : '#f59e0b' }}
+                        >
+                          {days === 0 ? 'Today' : `${days}d`}
+                        </span>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Mobile envelopes */}
+        <div className='lg:hidden space-y-2'>
+          <div className='flex justify-between items-center'>
+            <p className='section-title'>My Envelopes</p>
+            <button
+              onClick={() => setShowAdd(true)}
+              className='btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5'
+            >
+              <Plus size={12} /> New
+            </button>
+          </div>
+          {envelopes.map((env) => (
+            <EnvelopeCard
+              key={env.id}
+              env={env}
+              fp={fp}
+              currency={currency}
+              expanded={expandedEnvelopeId === env.id}
+              txnDesc={txnDesc}
+              txnAmt={txnAmt}
+              setTxnDesc={setTxnDesc}
+              setTxnAmt={setTxnAmt}
+              store={store}
+            />
+          ))}
         </div>
       </div>
 
@@ -531,13 +602,19 @@ export default function Home() {
       {showNudges && (
         <Modal onClose={() => setShowNudges(false)}>
           <div className='flex justify-between items-center mb-4'>
-            <h3 className='font-serif text-xl text-green-900'>Smart Nudges</h3>
+            <h3
+              className='font-serif text-lg font-semibold'
+              style={{ color: 'var(--text-primary)' }}
+            >
+              Smart Nudges
+            </h3>
             <button
               onClick={() => {
                 store.clearReadNudges();
                 setShowNudges(false);
               }}
-              className='text-xs text-green-700/60 font-semibold'
+              className='text-xs font-semibold'
+              style={{ color: 'var(--text-muted)' }}
             >
               Clear all
             </button>
@@ -546,27 +623,37 @@ export default function Home() {
             {unread.map((n) => (
               <div
                 key={n.id}
-                className={clsx(
-                  'rounded-md p-3 flex items-start gap-3 border',
-                  n.severity === 'danger'
-                    ? 'bg-red-50 border-red-200'
-                    : n.severity === 'warning'
-                      ? 'bg-amber-50 border-amber-200'
-                      : 'bg-blue-50 border-blue-200',
-                )}
+                className='flex items-start gap-3 p-3 rounded-xl border'
+                style={{
+                  background:
+                    n.severity === 'danger'
+                      ? 'rgba(239,68,68,0.06)'
+                      : n.severity === 'warning'
+                        ? 'rgba(251,191,36,0.06)'
+                        : 'rgba(64,255,225,0.05)',
+                  borderColor:
+                    n.severity === 'danger'
+                      ? 'rgba(239,68,68,0.15)'
+                      : n.severity === 'warning'
+                        ? 'rgba(251,191,36,0.15)'
+                        : 'rgba(64,255,225,0.10)',
+                }}
               >
-                <span className='text-sm mt-0.5 flex-shrink-0'>
+                <span className='text-sm flex-shrink-0 mt-0.5'>
                   {n.severity === 'danger'
                     ? '🔴'
                     : n.severity === 'warning'
                       ? '🟡'
                       : '🔵'}
                 </span>
-                <p className='text-xs text-green-900 flex-1 leading-relaxed'>
+                <p
+                  className='text-xs leading-relaxed flex-1'
+                  style={{ color: 'var(--text-primary)' }}
+                >
                   {n.message}
                 </p>
                 <button onClick={() => store.markNudgeRead(n.id)}>
-                  <X size={13} className='text-green-700/40' />
+                  <X size={13} style={{ color: 'var(--text-muted)' }} />
                 </button>
               </div>
             ))}
@@ -580,7 +667,6 @@ export default function Home() {
 function EnvelopeCard({
   env,
   fp,
-  currency,
   expanded,
   txnDesc,
   txnAmt,
@@ -591,16 +677,18 @@ function EnvelopeCard({
   const spent = env.txns.reduce((a: number, t: any) => a + t.amt, 0);
   const rem = env.budget - spent;
   const pct = pctOf(spent, env.budget);
-  const barColor = pct >= 100 ? '#dc2626' : pct >= 80 ? '#d97706' : '#259583';
+  const barColor =
+    pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : 'var(--brand)';
   const remColor =
-    rem < 0 ? '#dc2626' : rem < env.budget * 0.2 ? '#d97706' : '#259583';
+    rem < 0 ? '#ef4444' : rem < env.budget * 0.2 ? '#f59e0b' : 'var(--brand)';
 
   return (
     <div
       className={clsx(
-        'card overflow-hidden',
-        expanded && 'ring-1 ring-green-800/20',
+        'card overflow-hidden transition-all',
+        expanded && 'outline outline-1 outline-offset-0',
       )}
+      style={expanded ? { outlineColor: 'var(--brand-dim)' } : {}}
     >
       <div
         className='p-4 cursor-pointer select-none'
@@ -609,28 +697,45 @@ function EnvelopeCard({
         <div className='flex justify-between items-start mb-3'>
           <div className='flex items-center gap-3'>
             <div
-              className='w-10 h-10 rounded-md flex items-center justify-center text-lg flex-shrink-0'
-              style={{ background: `${CAT_COLORS[env.cat]}1a` }}
+              className='icon-tile'
+              style={{ background: `${CAT_COLORS[env.cat]}18` }}
             >
-              {CAT_ICONS[env.cat]}
+              <span>{CAT_ICONS[env.cat]}</span>
             </div>
             <div>
-              <p className='text-[15px] font-bold text-green-900 leading-tight'>
+              <p
+                className='text-[15px] font-bold leading-tight'
+                style={{ color: 'var(--text-primary)' }}
+              >
                 {env.name}
               </p>
-              <p className='text-xs text-green-700/50 font-medium mt-0.5'>
+              <p
+                className='text-xs font-medium mt-0.5'
+                style={{ color: 'var(--text-muted)' }}
+              >
                 {env.cat}
               </p>
             </div>
           </div>
           <div className='text-right'>
-            <p className='text-[15px] font-bold text-green-900'>{fp(spent)}</p>
-            <p className='text-xs text-green-700/50 mt-0.5'>
+            <p
+              className='text-[15px] font-bold'
+              style={{ color: 'var(--text-primary)' }}
+            >
+              {fp(spent)}
+            </p>
+            <p
+              className='text-xs mt-0.5'
+              style={{ color: 'var(--text-muted)' }}
+            >
               of {fp(env.budget)}
             </p>
           </div>
         </div>
-        <div className='h-1.5 bg-green-100 rounded-full overflow-hidden mb-2'>
+        <div
+          className='h-1.5 rounded-full overflow-hidden mb-2'
+          style={{ background: 'var(--bg-input)' }}
+        >
           <div
             className='h-full rounded-full transition-all duration-500'
             style={{ width: `${pct}%`, background: barColor }}
@@ -641,21 +746,28 @@ function EnvelopeCard({
             {rem < 0 ? `Over by ${fp(-rem)}` : `${fp(rem)} left`}
           </span>
           <div className='flex items-center gap-2'>
-            <span className='text-xs text-green-700/40'>{pct}%</span>
+            <span className='text-xs' style={{ color: 'var(--text-muted)' }}>
+              {pct}%
+            </span>
             {expanded ? (
-              <ChevronUp size={14} className='text-green-700/40' />
+              <ChevronUp size={14} style={{ color: 'var(--text-muted)' }} />
             ) : (
-              <ChevronDown size={14} className='text-green-700/40' />
+              <ChevronDown size={14} style={{ color: 'var(--text-muted)' }} />
             )}
           </div>
         </div>
       </div>
-
       {expanded && (
-        <div className='border-t border-green-800/10 p-4 bg-green-50/60'>
+        <div
+          className='border-t px-4 pt-3 pb-4'
+          style={{
+            borderColor: 'var(--border-default)',
+            background: 'var(--bg-card-alt)',
+          }}
+        >
           <div className='flex gap-2 mb-3'>
             <input
-              className='input flex-1'
+              className='input flex-1 h-9 text-xs'
               placeholder='Description'
               value={txnDesc[env.id] ?? ''}
               onChange={(e) =>
@@ -676,7 +788,7 @@ function EnvelopeCard({
               }}
             />
             <input
-              className='input flex-none w-24'
+              className='input flex-none w-24 h-9 text-xs'
               type='number'
               placeholder='Amount'
               inputMode='decimal'
@@ -686,7 +798,7 @@ function EnvelopeCard({
               }
             />
             <button
-              className='btn-primary py-2 px-3 text-xs whitespace-nowrap'
+              className='btn-primary h-9 px-3 text-xs whitespace-nowrap'
               onClick={() => {
                 const desc = txnDesc[env.id]?.trim(),
                   amount = parseFloat(txnAmt[env.id] ?? '');
@@ -704,41 +816,54 @@ function EnvelopeCard({
             </button>
           </div>
           {env.txns.length === 0 ? (
-            <p className='text-xs text-green-700/40 py-1'>No expenses yet</p>
+            <p className='text-xs py-2' style={{ color: 'var(--text-muted)' }}>
+              No expenses yet
+            </p>
           ) : (
-            <div className='space-y-0.5'>
-              {env.txns.map((t: any) => (
+            env.txns.map((t: any) => (
+              <div key={t.id} className='row-item'>
                 <div
-                  key={t.id}
-                  className='flex justify-between items-center py-1.5 border-b border-green-800/[0.07] last:border-0'
+                  className='w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-sm'
+                  style={{ background: 'var(--bg-input)' }}
                 >
-                  <div>
-                    <span className='text-xs text-green-700/70'>{t.name}</span>
-                    {t.date && (
-                      <span className='text-[10px] text-green-700/35 ml-2'>
-                        {t.date}
-                      </span>
-                    )}
-                  </div>
-                  <div className='flex items-center gap-2'>
-                    <span className='text-xs font-bold text-green-900'>
-                      {fp(t.amt)}
-                    </span>
-                    <button
-                      onClick={() => store.removeTransaction(env.id, t.id)}
-                    >
-                      <Trash2 size={12} className='text-red-400' />
-                    </button>
-                  </div>
+                  {CAT_ICONS[env.cat]}
                 </div>
-              ))}
-            </div>
+                <div className='flex-1 min-w-0'>
+                  <p
+                    className='text-xs font-semibold truncate'
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    {t.name}
+                  </p>
+                  {t.date && (
+                    <p
+                      className='text-[10px] mt-0.5'
+                      style={{ color: 'var(--text-muted)' }}
+                    >
+                      {t.date}
+                    </p>
+                  )}
+                </div>
+                <div className='flex items-center gap-2'>
+                  <span
+                    className='text-xs font-bold'
+                    style={{ color: '#ef4444' }}
+                  >
+                    -{fp(t.amt)}
+                  </span>
+                  <button onClick={() => store.removeTransaction(env.id, t.id)}>
+                    <Trash2 size={12} style={{ color: 'var(--text-muted)' }} />
+                  </button>
+                </div>
+              </div>
+            ))
           )}
           <button
             onClick={() => store.removeEnvelope(env.id)}
-            className='mt-3 text-xs text-red-400 font-semibold flex items-center gap-1'
+            className='mt-3 text-xs font-semibold flex items-center gap-1'
+            style={{ color: '#ef4444' }}
           >
-            <Trash2 size={12} /> Delete envelope
+            <Trash2 size={11} /> Delete envelope
           </button>
         </div>
       )}
@@ -751,17 +876,20 @@ function AddEnvelopeModal({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState('');
   const [cat, setCat] = useState<any>('Food');
   const [budget, setBudget] = useState('');
-
   const submit = () => {
     if (!name.trim() || isNaN(parseFloat(budget)) || parseFloat(budget) <= 0)
       return;
     store.addEnvelope({ name: name.trim(), cat, budget: parseFloat(budget) });
     onClose();
   };
-
   return (
     <Modal onClose={onClose}>
-      <h3 className='font-serif text-xl text-green-900 mb-4'>New Envelope</h3>
+      <h3
+        className='font-serif text-lg font-semibold mb-4'
+        style={{ color: 'var(--text-primary)' }}
+      >
+        New Envelope
+      </h3>
       <div className='space-y-3'>
         <div>
           <label className='label'>Envelope name</label>
@@ -799,11 +927,15 @@ function AddEnvelopeModal({ onClose }: { onClose: () => void }) {
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
+          className='h-11 px-5 text-sm font-semibold rounded-xl border'
+          style={{
+            borderColor: 'var(--border-strong)',
+            color: 'var(--text-muted)',
+          }}
         >
           Cancel
         </button>
-        <button onClick={submit} className='btn-primary flex-1 h-12'>
+        <button onClick={submit} className='btn-primary flex-1 h-11'>
           Add envelope
         </button>
       </div>

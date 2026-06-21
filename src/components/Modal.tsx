@@ -37,60 +37,59 @@ export default function Modal({
   return (
     <div
       className='fixed inset-0 z-50'
-      style={{ background: 'rgba(0,0,0,0.55)' }}
+      style={{ background: 'rgba(0,0,0,0.6)' }}
       onClick={onClose}
     >
-      {/* ── MOBILE: bottom sheet ── */}
-      <div className='lg:hidden absolute inset-0 flex flex-col justify-end'>
+      {/* Mobile bottom sheet */}
+      <div
+        className='lg:hidden absolute inset-0 flex flex-col justify-end'
+        onClick={(e) => e.stopPropagation()}
+      >
         <div
           className={clsx(
-            'w-full rounded-t-md flex flex-col',
-            'max-h-[92dvh]',
+            'w-full flex flex-col max-h-[92dvh] rounded-t-2xl',
             className,
           )}
-          style={{ background: 'var(--bg-card)' }}
-          onClick={(e) => e.stopPropagation()}
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-card)',
+            borderBottom: 'none',
+          }}
         >
-          {/* Drag handle */}
           <div className='flex-shrink-0 pt-3 pb-1 flex justify-center'>
             <div
-              className='w-9 h-1 rounded-full'
+              className='w-10 h-1 rounded-full'
               style={{ background: 'var(--border-strong)' }}
             />
           </div>
-
-          {/* Scrollable content */}
           <div
-            className='overflow-y-auto overscroll-contain px-5 pt-2 pb-28'
-            style={{
-              WebkitOverflowScrolling: 'touch',
-              paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))',
-            }}
+            className='overflow-y-auto overscroll-contain px-5 pb-8 pt-3'
+            style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
           >
             {children}
           </div>
         </div>
       </div>
-
-      {/* ── DESKTOP: centered dialog ── */}
+      {/* Desktop centered dialog */}
       <div
-        className='hidden lg:flex absolute inset-0 items-center justify-center p-6'
+        className={clsx(
+          'hidden lg:flex absolute inset-0 items-center justify-center p-6',
+        )}
         onClick={onClose}
       >
         <div
           className={clsx(
-            'w-full rounded-md flex flex-col max-h-[90dvh] shadow-2xl',
+            'w-full rounded-2xl flex flex-col max-h-[88dvh]',
             maxW,
             className,
           )}
           style={{
             background: 'var(--bg-card)',
-            border: '1px solid var(--border-default)',
-            boxShadow: '0 24px 48px rgba(0,0,0,0.35)',
+            border: '1px solid var(--border-strong)',
+            boxShadow: '0 32px 64px rgba(0,0,0,0.4)',
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Scrollable content */}
           <div className='overflow-y-auto overscroll-contain px-6 py-5'>
             {children}
           </div>

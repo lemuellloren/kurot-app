@@ -4,8 +4,8 @@
   "description": "Set aside a little for every need. Smart envelope budgeting.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a6127",
-  "theme_color": "#1a6127",
+  "background_color": "#000d0b",
+  "theme_color": "#000d0b",
   "orientation": "portrait",
   "icons": [
     {

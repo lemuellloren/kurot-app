@@ -5,16 +5,16 @@ import { formatCurrency, daysUntil, formatDate, pctOf } from '@/lib/utils';
 import HeroCard from '@/components/HeroCard';
 import Modal from '@/components/Modal';
 import ProgressRing from '@/components/ProgressRing';
-import { Plus, Trash2, PlusCircle, Target } from 'lucide-react';
+import { Plus, Trash2, PlusCircle, Target, CheckCircle } from 'lucide-react';
 import clsx from 'clsx';
 
 const GOAL_COLORS = [
-  '#259583',
-  '#185FA5',
-  '#854F0B',
-  '#993556',
-  '#534AB7',
-  '#993C1D',
+  '#40FFE1',
+  '#a78bfa',
+  '#f472b6',
+  '#fb923c',
+  '#34d399',
+  '#60a5fa',
 ];
 
 export default function GoalsPage() {
@@ -30,7 +30,7 @@ export default function GoalsPage() {
 
   return (
     <>
-      <div className='p-3.5 space-y-3'>
+      <div className='p-4 space-y-4 lg:p-0 lg:space-y-5'>
         <HeroCard
           eyebrow='Goals & Planning'
           title='Turn savings into reality'
@@ -44,62 +44,112 @@ export default function GoalsPage() {
             ].map((s) => (
               <div
                 key={s.label}
-                className='bg-white/10 rounded-md px-2 py-2 text-center'
+                className='rounded-xl p-2.5 text-center'
+                style={{ background: 'rgba(255,255,255,0.06)' }}
               >
-                <p className='text-white/50 text-[10px] uppercase tracking-wide'>
+                <p
+                  className='text-[10px] uppercase tracking-wide'
+                  style={{ color: 'rgba(255,255,255,0.40)' }}
+                >
                   {s.label}
                 </p>
-                <p className='text-white font-bold text-sm leading-tight mt-0.5'>
-                  {s.value}
-                </p>
+                <p className='text-sm font-bold text-white mt-0.5'>{s.value}</p>
               </div>
             ))}
           </div>
         </HeroCard>
 
-        <div className='flex justify-between items-center px-1'>
-          <span className='section-title'>Active Goals</span>
+        <div className='hidden lg:grid grid-cols-3 gap-4'>
+          {[
+            { label: 'Active Goals', value: active.length, sub: 'in progress' },
+            {
+              label: 'Completed',
+              value: completed.length,
+              sub: 'goals achieved',
+            },
+            {
+              label: 'Total Saved',
+              value: fp(totalSaved),
+              sub: 'across all goals',
+            },
+          ].map((s) => (
+            <div key={s.label} className='card p-4'>
+              <p className='section-title mb-2'>{s.label}</p>
+              <p
+                className='font-serif text-2xl font-bold'
+                style={{ color: 'var(--text-primary)' }}
+              >
+                {s.value}
+              </p>
+              <p
+                className='text-xs mt-1'
+                style={{ color: 'var(--text-muted)' }}
+              >
+                {s.sub}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className='flex justify-between items-center'>
+          <p className='section-title'>Active Goals</p>
           <button
             onClick={() => setShowAdd(true)}
-            className='btn-secondary text-xs py-1.5 px-3 flex items-center gap-1'
+            className='btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5'
           >
-            <Plus size={13} /> New Goal
+            <Plus size={12} /> New Goal
           </button>
         </div>
 
         {active.length === 0 ? (
           <div className='card p-8 text-center'>
-            <Target size={32} className='text-green-700/20 mx-auto mb-2' />
-            <p className='text-sm text-green-700/50'>No active goals yet</p>
-            <p className='text-xs text-green-700/35 mt-1'>
+            <Target
+              size={28}
+              className='mx-auto mb-2'
+              style={{ color: 'var(--text-muted)' }}
+            />
+            <p
+              className='text-sm font-semibold'
+              style={{ color: 'var(--text-muted)' }}
+            >
+              No active goals yet
+            </p>
+            <p className='text-xs mt-1' style={{ color: 'var(--text-muted)' }}>
               Tap &ldquo;New Goal&rdquo; to start saving
             </p>
           </div>
         ) : (
-          active.map((g) => (
-            <GoalCard
-              key={g.id}
-              goal={g}
-              fp={fp}
-              onContribute={() => setContributeId(g.id)}
-              onDelete={() => store.removeGoal(g.id)}
-            />
-          ))
-        )}
-
-        {completed.length > 0 && (
-          <>
-            <p className='section-title px-1 pt-2'>Completed 🎉</p>
-            {completed.map((g) => (
+          <div className='space-y-2'>
+            {active.map((g) => (
               <GoalCard
                 key={g.id}
                 goal={g}
                 fp={fp}
-                completed
-                onContribute={() => {}}
+                onContribute={() => setContributeId(g.id)}
                 onDelete={() => store.removeGoal(g.id)}
               />
             ))}
+          </div>
+        )}
+
+        {completed.length > 0 && (
+          <>
+            <p className='section-title flex items-center gap-1.5 pt-2'>
+              <CheckCircle size={11} style={{ color: 'var(--brand)' }} />{' '}
+              Completed
+            </p>
+            <div className='space-y-2'>
+              {completed.map((g) => (
+                <GoalCard
+                  key={g.id}
+                  goal={g}
+                  fp={fp}
+                  completed
+                  onContribute={() => {}}
+                  onDelete={() => store.removeGoal(g.id)}
+                />
+              ))}
+            </div>
           </>
         )}
       </div>
@@ -127,63 +177,96 @@ function GoalCard({
   const daysLeft = daysUntil(g.targetDate);
 
   return (
-    <div className='card overflow-hidden'>
+    <div
+      className={clsx('card overflow-hidden', expanded && 'outline outline-1')}
+      style={expanded ? { outlineColor: 'var(--brand-dim)' } : {}}
+    >
       <div
         className='p-4 cursor-pointer select-none'
         onClick={() => setExpanded((v) => !v)}
       >
-        <div className='flex items-start gap-3 mb-3'>
+        <div className='flex items-start gap-3'>
           <ProgressRing
             pct={pct}
-            size={52}
-            stroke={5}
+            size={48}
+            stroke={4}
             color={g.color}
-            bg='#C0FFF5'
+            bg='var(--bg-input)'
           >
-            <span className='text-[10px] font-bold text-green-800'>{pct}%</span>
+            <span className='text-[9px] font-black' style={{ color: g.color }}>
+              {pct}%
+            </span>
           </ProgressRing>
           <div className='flex-1 min-w-0'>
-            <p className='text-[15px] font-bold text-green-900 leading-tight'>
-              {g.name}
-            </p>
+            <div className='flex justify-between items-start'>
+              <p
+                className='text-[15px] font-bold leading-tight'
+                style={{ color: 'var(--text-primary)' }}
+              >
+                {g.name}
+              </p>
+              <span
+                className='text-[11px] font-semibold ml-2 flex-shrink-0'
+                style={{
+                  color: completed
+                    ? 'var(--brand)'
+                    : daysLeft < 0
+                      ? '#ef4444'
+                      : daysLeft < 30
+                        ? '#f59e0b'
+                        : 'var(--text-muted)',
+                }}
+              >
+                {completed
+                  ? '✓ Done'
+                  : daysLeft < 0
+                    ? `${Math.abs(daysLeft)}d overdue`
+                    : `${daysLeft}d left`}
+              </span>
+            </div>
             {g.notes && (
-              <p className='text-xs text-green-700/50 mt-0.5 truncate'>
+              <p
+                className='text-xs mt-0.5 truncate'
+                style={{ color: 'var(--text-muted)' }}
+              >
                 {g.notes}
               </p>
             )}
-            <p className='text-xs text-green-700/50 mt-1'>
-              {fp(g.currentAmount)}{' '}
-              <span className='text-green-700/35'>/ {fp(g.targetAmount)}</span>
-            </p>
-          </div>
-          <div className='text-right flex-shrink-0'>
-            {completed ? (
-              <span className='text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full'>
-                Done ✓
-              </span>
-            ) : (
+            <div
+              className='h-1.5 rounded-full overflow-hidden mt-2'
+              style={{ background: 'var(--bg-input)' }}
+            >
+              <div
+                className='h-full rounded-full'
+                style={{ width: `${pct}%`, background: g.color }}
+              />
+            </div>
+            <div className='flex justify-between mt-1'>
               <span
-                className={clsx(
-                  'text-xs font-medium',
-                  daysLeft < 30 ? 'text-amber-600' : 'text-green-700/50',
-                )}
+                className='text-[11px]'
+                style={{ color: 'var(--text-muted)' }}
               >
-                {daysLeft >= 0 ? `${daysLeft}d left` : 'Overdue'}
+                {fp(g.currentAmount)}
               </span>
-            )}
+              <span
+                className='text-[11px]'
+                style={{ color: 'var(--text-muted)' }}
+              >
+                {fp(g.targetAmount)}
+              </span>
+            </div>
           </div>
-        </div>
-
-        <div className='h-1.5 bg-green-100 rounded-full overflow-hidden'>
-          <div
-            className='h-full rounded-full transition-all duration-500'
-            style={{ width: `${pct}%`, background: g.color }}
-          />
         </div>
       </div>
 
       {expanded && (
-        <div className='border-t border-green-800/10 p-4 bg-green-50/60 space-y-3'>
+        <div
+          className='border-t px-4 pt-3 pb-4 space-y-3'
+          style={{
+            borderColor: 'var(--border-default)',
+            background: 'var(--bg-card-alt)',
+          }}
+        >
           <div className='grid grid-cols-2 gap-3 text-xs'>
             {[
               { label: 'Start date', value: formatDate(g.startDate) },
@@ -195,50 +278,64 @@ function GoalCard({
               { label: 'Contributions', value: g.contributions.length },
             ].map((f) => (
               <div key={f.label}>
-                <p className='text-green-700/45'>{f.label}</p>
-                <p className='font-semibold text-green-900 mt-0.5'>{f.value}</p>
+                <p style={{ color: 'var(--text-muted)' }}>{f.label}</p>
+                <p
+                  className='font-semibold mt-0.5'
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  {f.value}
+                </p>
               </div>
             ))}
           </div>
-
           {g.contributions.length > 0 && (
             <div>
-              <p className='text-xs font-semibold text-green-700/50 mb-2'>
-                Recent contributions
+              <p
+                className='text-[11px] font-semibold uppercase tracking-wide mb-2'
+                style={{ color: 'var(--text-muted)' }}
+              >
+                Recent
               </p>
-              <div className='space-y-0.5'>
-                {[...g.contributions]
-                  .reverse()
-                  .slice(0, 4)
-                  .map((c: any) => (
+              {[...g.contributions]
+                .reverse()
+                .slice(0, 3)
+                .map((c: any) => (
+                  <div key={c.id} className='row-item'>
                     <div
-                      key={c.id}
-                      className='flex justify-between py-1.5 border-b border-green-800/[0.07] last:border-0'
+                      className='w-6 h-6 rounded-lg flex items-center justify-center text-xs flex-shrink-0'
+                      style={{ background: `${g.color}18`, color: g.color }}
                     >
-                      <span className='text-xs text-green-700/70'>
-                        {c.note || 'Contribution'} · {formatDate(c.date)}
-                      </span>
-                      <span className='text-xs font-bold text-green-800'>
-                        +{fp(c.amount)}
-                      </span>
+                      +
                     </div>
-                  ))}
-              </div>
+                    <span
+                      className='text-xs flex-1 truncate'
+                      style={{ color: 'var(--text-secondary)' }}
+                    >
+                      {c.note || 'Contribution'} · {formatDate(c.date)}
+                    </span>
+                    <span
+                      className='text-xs font-bold'
+                      style={{ color: g.color }}
+                    >
+                      +{fp(c.amount)}
+                    </span>
+                  </div>
+                ))}
             </div>
           )}
-
           <div className='flex gap-2 pt-1'>
             {!completed && (
               <button
                 onClick={onContribute}
-                className='btn-primary flex-1 h-10 text-xs flex items-center justify-center gap-1'
+                className='btn-primary flex-1 h-10 text-xs flex items-center justify-center gap-1.5'
               >
                 <PlusCircle size={13} /> Contribute
               </button>
             )}
             <button
               onClick={onDelete}
-              className='h-10 px-4 text-xs text-red-400 font-semibold border border-red-200 rounded-md flex items-center gap-1'
+              className='h-10 px-4 text-xs font-semibold rounded-xl border flex items-center gap-1'
+              style={{ color: '#ef4444', borderColor: 'rgba(239,68,68,0.20)' }}
             >
               <Trash2 size={12} /> Delete
             </button>
@@ -259,7 +356,6 @@ function AddGoalModal({ onClose }: { onClose: () => void }) {
   const [targetDate, setTargetDate] = useState('');
   const [notes, setNotes] = useState('');
   const [color, setColor] = useState(GOAL_COLORS[0]);
-
   const submit = () => {
     if (!name.trim() || isNaN(parseFloat(target)) || !targetDate) return;
     store.addGoal({
@@ -272,10 +368,14 @@ function AddGoalModal({ onClose }: { onClose: () => void }) {
     });
     onClose();
   };
-
   return (
     <Modal onClose={onClose}>
-      <h3 className='font-serif text-xl text-green-900 mb-4'>New Goal</h3>
+      <h3
+        className='font-serif text-lg font-semibold mb-4'
+        style={{ color: 'var(--text-primary)' }}
+      >
+        New Goal
+      </h3>
       <div className='space-y-3'>
         <div>
           <label className='label'>Goal name</label>
@@ -334,12 +434,14 @@ function AddGoalModal({ onClose }: { onClose: () => void }) {
                 key={c}
                 onClick={() => setColor(c)}
                 className={clsx(
-                  'w-8 h-8 rounded-full border-2 transition-all',
-                  color === c
-                    ? 'border-green-900 scale-110'
-                    : 'border-transparent',
+                  'w-7 h-7 rounded-lg border-2 transition-all',
+                  color === c ? 'scale-110' : 'border-transparent',
                 )}
-                style={{ background: c }}
+                style={{
+                  background: c,
+                  borderColor:
+                    color === c ? 'var(--text-primary)' : 'transparent',
+                }}
               />
             ))}
           </div>
@@ -348,11 +450,15 @@ function AddGoalModal({ onClose }: { onClose: () => void }) {
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
+          className='h-11 px-5 text-sm font-semibold rounded-xl border'
+          style={{
+            borderColor: 'var(--border-strong)',
+            color: 'var(--text-muted)',
+          }}
         >
           Cancel
         </button>
-        <button onClick={submit} className='btn-primary flex-1 h-12'>
+        <button onClick={submit} className='btn-primary flex-1 h-11'>
           Create goal
         </button>
       </div>
@@ -372,21 +478,28 @@ function ContributeModal({
   const fp = (n: number) => formatCurrency(n, store.currency);
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
-
   const submit = () => {
     const amt = parseFloat(amount);
     if (isNaN(amt) || amt <= 0) return;
     store.contributeToGoal(goalId, amt, note);
     onClose();
   };
-
   return (
     <Modal onClose={onClose}>
-      <h3 className='font-serif text-xl text-green-900 mb-1'>Contribute</h3>
-      <p className='text-sm text-green-700/60 mb-4'>
-        Adding to:{' '}
-        <span className='font-semibold text-green-800'>{goal.name}</span>
-        <span className='text-green-700/40 ml-1'>
+      <h3
+        className='font-serif text-lg font-semibold mb-1'
+        style={{ color: 'var(--text-primary)' }}
+      >
+        Contribute
+      </h3>
+      <p className='text-sm mb-4' style={{ color: 'var(--text-muted)' }}>
+        <span
+          className='font-semibold'
+          style={{ color: 'var(--text-primary)' }}
+        >
+          {goal.name}
+        </span>
+        <span className='ml-1'>
           · {fp(Math.max(0, goal.targetAmount - goal.currentAmount))} remaining
         </span>
       </p>
@@ -415,11 +528,15 @@ function ContributeModal({
       <div className='flex gap-2 mt-5'>
         <button
           onClick={onClose}
-          className='h-12 px-5 text-sm border border-green-800/20 rounded-md text-green-700/70 font-semibold'
+          className='h-11 px-5 text-sm font-semibold rounded-xl border'
+          style={{
+            borderColor: 'var(--border-strong)',
+            color: 'var(--text-muted)',
+          }}
         >
           Cancel
         </button>
-        <button onClick={submit} className='btn-primary flex-1 h-12'>
+        <button onClick={submit} className='btn-primary flex-1 h-11'>
           Add contribution
         </button>
       </div>
