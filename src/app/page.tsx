@@ -1,5 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+const GettingStarted = dynamic(() => import('@/components/GettingStarted'), {
+  ssr: false,
+});
 import { useKurotStore, CAT_COLORS, CAT_ICONS, CATEGORIES } from '@/store';
 import { formatCurrency, pctOf } from '@/lib/utils';
 import Modal from '@/components/Modal';
@@ -33,11 +38,17 @@ export default function Home() {
   } = store;
   const [showAdd, setShowAdd] = useState(false);
   const [showNudges, setShowNudges] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [txnDesc, setTxnDesc] = useState<Record<string, string>>({});
   const [txnAmt, setTxnAmt] = useState<Record<string, string>>({});
   const [greeting, setGreeting] = useState('');
   const [currentMonth, setCurrentMonth] = useState('');
   const fp = (n: number) => formatCurrency(n, currency);
+
+  // Show onboarding for new users (no name set)
+  useEffect(() => {
+    if (!userName) setShowOnboarding(true);
+  }, []);
 
   // Realtime nudges — regenerate whenever spending, goals or debts change
   const spendingKey = envelopes
@@ -110,6 +121,10 @@ export default function Home() {
 
   return (
     <>
+      {showOnboarding && (
+        <GettingStarted onDone={() => setShowOnboarding(false)} />
+      )}
+
       <div className='p-4 space-y-4 lg:p-0 lg:space-y-5'>
         {/* ── MOBILE ── */}
         <div className='lg:hidden space-y-3'>
