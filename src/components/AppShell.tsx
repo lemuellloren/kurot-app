@@ -290,16 +290,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         <span className='badge'>{unread.length} new</span>
                       )}
                     </div>
-                    {unread.length > 0 && (
+                    {nudges.length > 0 && (
                       <button
                         onClick={() => {
-                          store.clearReadNudges();
+                          nudges.forEach((n) => store.markNudgeRead(n.id));
                           setNudgeOpen(false);
                         }}
-                        className='flex items-center gap-1 text-xs font-semibold'
-                        style={{ color: 'var(--text-muted)' }}
+                        className='flex items-center gap-1 text-xs font-semibold transition-all'
+                        style={{ color: '#ef4444' }}
                       >
-                        <CheckCheck size={11} /> Clear
+                        <CheckCheck size={11} /> Clear all
                       </button>
                     )}
                   </div>
@@ -317,14 +317,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         >
                           All caught up!
                         </p>
+                        <p
+                          className='text-xs mt-1'
+                          style={{ color: 'var(--text-muted)' }}
+                        >
+                          No nudges right now
+                        </p>
                       </div>
                     ) : (
                       nudges.map((n) => (
                         <div
                           key={n.id}
                           className={clsx(
-                            'flex items-start gap-3 px-4 py-3 border-b last:border-0',
-                            n.read && 'opacity-35',
+                            'flex items-start gap-3 px-4 py-3 border-b last:border-0 transition-all',
+                            n.read && 'opacity-30',
                           )}
                           style={{ borderColor: 'var(--border-default)' }}
                         >
@@ -352,7 +358,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                           {!n.read && (
                             <button
                               onClick={() => store.markNudgeRead(n.id)}
-                              className='flex-shrink-0 mt-0.5'
+                              className='flex-shrink-0 w-5 h-5 rounded-md flex items-center justify-center mt-0.5 transition-all hover:bg-red-50'
+                              title='Dismiss'
                               style={{ color: 'var(--text-muted)' }}
                             >
                               <X size={11} />

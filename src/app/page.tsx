@@ -39,9 +39,15 @@ export default function Home() {
   const [currentMonth, setCurrentMonth] = useState('');
   const fp = (n: number) => formatCurrency(n, currency);
 
+  // Realtime nudges — regenerate whenever spending, goals or debts change
+  const spendingKey = envelopes
+    .map((e) => e.txns.reduce((a, t) => a + t.amt, 0))
+    .join(',');
+  const goalsKey = goals.map((g) => g.currentAmount).join(',');
+  const debtsKey = debts.map((d) => d.remainingAmount).join(',');
   useEffect(() => {
     store.generateNudges();
-  }, []);
+  }, [spendingKey, goalsKey, debtsKey, recurringEntries.length]);
   useEffect(() => {
     const h = new Date().getHours();
     const tod =
@@ -601,62 +607,130 @@ export default function Home() {
 
       {showNudges && (
         <Modal onClose={() => setShowNudges(false)}>
+          {/* Header */}
           <div className='flex justify-between items-center mb-4'>
-            <h3
-              className='font-serif text-lg font-semibold'
-              style={{ color: 'var(--text-primary)' }}
-            >
-              Smart Nudges
-            </h3>
-            <button
-              onClick={() => {
-                store.clearReadNudges();
-                setShowNudges(false);
-              }}
-              className='text-xs font-semibold'
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Clear all
-            </button>
-          </div>
-          <div className='space-y-2'>
-            {unread.map((n) => (
-              <div
-                key={n.id}
-                className='flex items-start gap-3 p-3 rounded-xl border'
+            <div className='flex items-center gap-2'>
+              <h3
+                className='font-serif text-lg font-semibold'
+                style={{ color: 'var(--text-primary)' }}
+              >
+                Smart Nudges
+              </h3>
+              {nudges.length > 0 && (
+                <span className='badge'>{nudges.length}</span>
+              )}
+            </div>
+            {nudges.length > 0 && (
+              <button
+                onClick={() => {
+                  store.clearReadNudges?.();
+                  nudges.forEach((n) => store.markNudgeRead(n.id));
+                }}
+                className='text-xs font-semibold px-3 py-1.5 rounded-lg transition-all'
                 style={{
-                  background:
-                    n.severity === 'danger'
-                      ? 'rgba(239,68,68,0.06)'
-                      : n.severity === 'warning'
-                        ? 'rgba(251,191,36,0.06)'
-                        : 'rgba(64,255,225,0.05)',
-                  borderColor:
-                    n.severity === 'danger'
-                      ? 'rgba(239,68,68,0.15)'
-                      : n.severity === 'warning'
-                        ? 'rgba(251,191,36,0.15)'
-                        : 'rgba(64,255,225,0.10)',
+                  background: 'rgba(239,68,68,0.08)',
+                  color: '#ef4444',
+                  border: '1px solid rgba(239,68,68,0.15)',
                 }}
               >
-                <span className='text-sm flex-shrink-0 mt-0.5'>
-                  {n.severity === 'danger'
-                    ? '🔴'
-                    : n.severity === 'warning'
-                      ? '🟡'
-                      : '🔵'}
-                </span>
-                <p
-                  className='text-xs leading-relaxed flex-1'
-                  style={{ color: 'var(--text-primary)' }}
+                Clear all
+              </button>
+            )}
+          </div>
+
+          {/* Empty state */}
+          {nudges.length === 0 ? (
+            <div className='py-8 text-center'>
+              <Bell
+                size={32}
+                className='mx-auto mb-3'
+                style={{ color: 'var(--text-muted)' }}
+              />
+              <p
+                className='text-sm font-semibold'
+                style={{ color: 'var(--text-muted)' }}
+              >
+                All caught up!
+              </p>
+              <p
+                className='text-xs mt-1'
+                style={{ color: 'var(--text-muted)' }}
+              >
+                No nudges right now
+              </p>
+            </div>
+          ) : (
+            <div className='space-y-2'>
+              {nudges.map((n) => (
+                <div
+                  key={n.id}
+                  className={clsx(
+                    'flex items-start gap-3 p-3 rounded-xl border transition-all',
+                    n.read && 'opacity-40',
+                  )}
+                  style={{
+                    background:
+                      n.severity === 'danger'
+                        ? 'rgba(239,68,68,0.06)'
+                        : n.severity === 'warning'
+                          ? 'rgba(251,191,36,0.06)'
+                          : 'rgba(64,255,225,0.05)',
+                    borderColor:
+                      n.severity === 'danger'
+                        ? 'rgba(239,68,68,0.15)'
+                        : n.severity === 'warning'
+                          ? 'rgba(251,191,36,0.15)'
+                          : 'rgba(64,255,225,0.10)',
+                  }}
                 >
-                  {n.message}
-                </p>
-                <button onClick={() => store.markNudgeRead(n.id)}>
-                  <X size={13} style={{ color: 'var(--text-muted)' }} />
-                </button>
-              </div>
-            ))}
+                  <span className='text-sm flex-shrink-0 mt-0.5'>
+                    {n.severity === 'danger'
+                      ? '🔴'
+                      : n.severity === 'warning'
+                        ? '🟡'
+                        : '🔵'}
+                  </span>
+                  <div className='flex-1 min-w-0'>
+                    <p
+                      className='text-xs leading-relaxed'
+                      style={{ color: 'var(--text-primary)' }}
+                    >
+                      {n.message}
+                    </p>
+                    <p
+                      className='text-[10px] mt-1'
+                      style={{ color: 'var(--text-muted)' }}
+                    >
+                      {n.date}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => store.markNudgeRead(n.id)}
+                    className='flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-all hover:bg-red-50'
+                    title='Dismiss'
+                  >
+                    <X size={12} style={{ color: 'var(--text-muted)' }} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Footer */}
+          <div
+            className='mt-4 pt-3 border-t'
+            style={{ borderColor: 'var(--border-default)' }}
+          >
+            <button
+              onClick={() => store.generateNudges()}
+              className='w-full text-xs font-semibold py-2 rounded-xl transition-all'
+              style={{
+                background: 'var(--brand-dimmer)',
+                color: 'var(--brand)',
+              }}
+            >
+              Refresh nudges
+            </button>
           </div>
         </Modal>
       )}

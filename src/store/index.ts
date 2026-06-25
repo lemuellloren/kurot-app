@@ -138,6 +138,7 @@ export interface KurotState {
   generateNudges: () => void;
   markNudgeRead: (id: string) => void;
   clearReadNudges: () => void;
+  removeNudge: (id: string) => void;
 }
 
 const uid = () => Math.random().toString(36).slice(2, 10);
@@ -609,6 +610,8 @@ export const useKurotStore = create<KurotState>()(
         })),
       clearReadNudges: () =>
         set((s) => ({ nudges: s.nudges.filter((n) => !n.read) })),
+      removeNudge: (id) =>
+        set((s) => ({ nudges: s.nudges.filter((n) => n.id !== id) })),
     }),
     { name: 'kurot_v2' },
   ),

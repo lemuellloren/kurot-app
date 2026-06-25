@@ -351,17 +351,37 @@ export default function SettingsPage() {
         {/* ── Nudges ── */}
         {tab === 'nudges' && (
           <div className='space-y-2'>
+            {/* Header row */}
             <div className='flex justify-between items-center'>
               <p className='text-xs' style={{ color: 'var(--text-muted)' }}>
-                Smart alerts about your finances.
+                Smart alerts — updates in real time.
               </p>
-              <button
-                onClick={() => store.generateNudges()}
-                className='btn-secondary text-xs py-1.5 px-3'
-              >
-                Refresh
-              </button>
+              <div className='flex items-center gap-2'>
+                {nudges.length > 0 && (
+                  <button
+                    onClick={() =>
+                      nudges.forEach((n) => store.markNudgeRead(n.id))
+                    }
+                    className='text-xs font-semibold px-3 py-1.5 rounded-lg'
+                    style={{
+                      background: 'rgba(239,68,68,0.08)',
+                      color: '#ef4444',
+                      border: '1px solid rgba(239,68,68,0.15)',
+                    }}
+                  >
+                    Clear all
+                  </button>
+                )}
+                <button
+                  onClick={() => store.generateNudges()}
+                  className='btn-secondary text-xs py-1.5 px-3'
+                >
+                  Refresh
+                </button>
+              </div>
             </div>
+
+            {/* Empty state */}
             {nudges.length === 0 ? (
               <div className='card p-8 text-center'>
                 <Bell
@@ -383,57 +403,67 @@ export default function SettingsPage() {
                 </p>
               </div>
             ) : (
-              nudges.map((n) => (
-                <div
-                  key={n.id}
-                  className={clsx(
-                    'card p-3.5 flex items-start gap-3',
-                    n.read && 'opacity-40',
-                  )}
-                >
-                  <span className='text-base flex-shrink-0 mt-0.5'>
-                    {n.severity === 'danger'
-                      ? '🔴'
-                      : n.severity === 'warning'
-                        ? '🟡'
-                        : '🔵'}
-                  </span>
-                  <div className='flex-1 min-w-0'>
-                    <p
-                      className='text-xs leading-relaxed'
-                      style={{ color: 'var(--text-primary)' }}
-                    >
-                      {n.message}
-                    </p>
-                    <p
-                      className='text-[10px] mt-1'
-                      style={{ color: 'var(--text-muted)' }}
-                    >
-                      {n.date}
-                    </p>
-                  </div>
-                  {!n.read && (
-                    <button
-                      onClick={() => store.markNudgeRead(n.id)}
-                      className='flex-shrink-0'
-                    >
-                      <BellOff
-                        size={14}
+              <div className='space-y-2'>
+                {nudges.map((n) => (
+                  <div
+                    key={n.id}
+                    className={clsx(
+                      'rounded-xl border p-3.5 flex items-start gap-3 transition-all',
+                      n.read ? 'opacity-35' : '',
+                    )}
+                    style={{
+                      background:
+                        n.severity === 'danger'
+                          ? 'rgba(239,68,68,0.06)'
+                          : n.severity === 'warning'
+                            ? 'rgba(251,191,36,0.06)'
+                            : 'rgba(64,255,225,0.05)',
+                      borderColor:
+                        n.severity === 'danger'
+                          ? 'rgba(239,68,68,0.15)'
+                          : n.severity === 'warning'
+                            ? 'rgba(251,191,36,0.15)'
+                            : 'rgba(64,255,225,0.10)',
+                    }}
+                  >
+                    <span className='text-base flex-shrink-0 mt-0.5'>
+                      {n.severity === 'danger'
+                        ? '🔴'
+                        : n.severity === 'warning'
+                          ? '🟡'
+                          : '🔵'}
+                    </span>
+                    <div className='flex-1 min-w-0'>
+                      <p
+                        className='text-xs leading-relaxed'
+                        style={{ color: 'var(--text-primary)' }}
+                      >
+                        {n.message}
+                      </p>
+                      <p
+                        className='text-[10px] mt-1'
                         style={{ color: 'var(--text-muted)' }}
-                      />
-                    </button>
-                  )}
-                </div>
-              ))
-            )}
-            {nudges.some((n) => n.read) && (
-              <button
-                onClick={store.clearReadNudges}
-                className='text-xs font-semibold w-full text-center py-2'
-                style={{ color: 'var(--text-muted)' }}
-              >
-                Clear read nudges
-              </button>
+                      >
+                        {n.date}
+                      </p>
+                    </div>
+                    {/* Per-nudge dismiss */}
+                    {!n.read && (
+                      <button
+                        onClick={() => store.markNudgeRead(n.id)}
+                        className='flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all'
+                        style={{ background: 'var(--bg-input)' }}
+                        title='Dismiss'
+                      >
+                        <BellOff
+                          size={13}
+                          style={{ color: 'var(--text-muted)' }}
+                        />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}
