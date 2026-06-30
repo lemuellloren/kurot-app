@@ -139,6 +139,7 @@ export interface KurotState {
   markNudgeRead: (id: string) => void;
   clearReadNudges: () => void;
   removeNudge: (id: string) => void;
+  resetAllData: () => void;
 }
 
 const uid = () => Math.random().toString(36).slice(2, 10);
@@ -612,6 +613,23 @@ export const useKurotStore = create<KurotState>()(
         set((s) => ({ nudges: s.nudges.filter((n) => !n.read) })),
       removeNudge: (id) =>
         set((s) => ({ nudges: s.nudges.filter((n) => n.id !== id) })),
+
+      resetAllData: () =>
+        set({
+          userName: '',
+          income: 45000,
+          currency: '₱',
+          theme: 'system',
+          envelopes: [],
+          categoryBudgets: [],
+          recurringEntries: [],
+          goals: [],
+          debts: [],
+          history: [],
+          nudges: [],
+          expandedEnvelopeId: null,
+          nextId: 100,
+        }),
     }),
     { name: 'kurot_v2' },
   ),

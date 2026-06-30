@@ -15,6 +15,8 @@ import {
   Sun,
   Moon,
   Monitor,
+  AlertTriangle,
+  RotateCcw,
 } from 'lucide-react';
 import clsx from 'clsx';
 import Image from 'next/image';
@@ -56,6 +58,7 @@ export default function SettingsPage() {
   const [localCurrency, setLocalCurrency] = useState(currency);
   const [showAddRecurring, setShowAddRecurring] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showReset, setShowReset] = useState(false);
 
   const unread = nudges.filter((n) => !n.read);
 
@@ -470,6 +473,52 @@ export default function SettingsPage() {
 
         <DataPortability />
 
+        {/* Reset data */}
+        <div className='card p-4'>
+          <div className='flex items-center justify-between mb-3'>
+            <div className='flex items-center gap-2.5'>
+              <div
+                className='w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0'
+                style={{ background: 'rgba(239,68,68,0.08)' }}
+              >
+                <RotateCcw size={16} style={{ color: '#ef4444' }} />
+              </div>
+              <div>
+                <p
+                  className='text-sm font-bold'
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  Reset All Data
+                </p>
+                <p
+                  className='text-xs mt-0.5'
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  Wipe everything and start fresh
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowReset(true)}
+              className='text-xs font-bold px-3 py-1.5 rounded-lg transition-all'
+              style={{
+                background: 'rgba(239,68,68,0.10)',
+                color: '#ef4444',
+                border: '1px solid rgba(239,68,68,0.20)',
+              }}
+            >
+              Reset
+            </button>
+          </div>
+          <p
+            className='text-xs leading-relaxed'
+            style={{ color: 'var(--text-muted)' }}
+          >
+            This will permanently delete all your envelopes, transactions,
+            goals, debts, history, and settings. This action cannot be undone.
+          </p>
+        </div>
+
         {/* About */}
         <div className='card p-4'>
           <div className='flex items-center gap-3 mb-3'>
@@ -517,6 +566,7 @@ export default function SettingsPage() {
       {showAddRecurring && (
         <AddRecurringModal onClose={() => setShowAddRecurring(false)} />
       )}
+      {showReset && <ResetModal onClose={() => setShowReset(false)} />}
     </>
   );
 }
@@ -759,6 +809,143 @@ function AddRecurringModal({ onClose }: { onClose: () => void }) {
         </button>
         <button onClick={submit} className='btn-primary flex-1 h-11'>
           Add recurring
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
+function ResetModal({ onClose }: { onClose: () => void }) {
+  const store = useKurotStore();
+  const [confirm, setConfirm] = useState('');
+  const [resetting, setResetting] = useState(false);
+  const isConfirmed = confirm.toLowerCase() === 'reset';
+
+  const handleReset = () => {
+    if (!isConfirmed) return;
+    setResetting(true);
+    setTimeout(() => {
+      store.resetAllData();
+      // Clear persisted storage
+      try {
+        localStorage.removeItem('kurot_v2');
+      } catch {}
+      window.location.href = '/';
+    }, 600);
+  };
+
+  return (
+    <Modal onClose={onClose}>
+      {/* Header */}
+      <div className='flex flex-col items-center text-center mb-5'>
+        <div
+          className='w-14 h-14 rounded-2xl flex items-center justify-center mb-4'
+          style={{
+            background: 'rgba(239,68,68,0.10)',
+            border: '1px solid rgba(239,68,68,0.20)',
+          }}
+        >
+          <AlertTriangle size={24} style={{ color: '#ef4444' }} />
+        </div>
+        <h3
+          className='font-serif text-lg font-bold mb-1'
+          style={{ color: 'var(--text-primary)' }}
+        >
+          Reset All Data
+        </h3>
+        <p className='text-sm' style={{ color: 'var(--text-muted)' }}>
+          This will permanently delete everything — envelopes, transactions,
+          goals, debts, history, and settings.
+        </p>
+      </div>
+
+      {/* What gets deleted */}
+      <div
+        className='rounded-xl p-3 mb-4 space-y-1.5'
+        style={{
+          background: 'rgba(239,68,68,0.06)',
+          border: '1px solid rgba(239,68,68,0.12)',
+        }}
+      >
+        {[
+          'All envelopes & transactions',
+          'All goals & contributions',
+          'All debts & payments',
+          'Monthly history snapshots',
+          'Recurring entries',
+          'Your name, income & preferences',
+        ].map((item) => (
+          <div key={item} className='flex items-center gap-2'>
+            <Trash2
+              size={11}
+              style={{ color: '#ef4444' }}
+              className='flex-shrink-0'
+            />
+            <span className='text-xs' style={{ color: '#ef4444' }}>
+              {item}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Confirmation input */}
+      <div className='mb-5'>
+        <label className='label'>
+          Type{' '}
+          <span className='font-black' style={{ color: '#ef4444' }}>
+            reset
+          </span>{' '}
+          to confirm
+        </label>
+        <input
+          className='input'
+          placeholder='reset'
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleReset()}
+          style={
+            isConfirmed
+              ? {
+                  borderColor: '#ef4444',
+                  boxShadow: '0 0 0 3px rgba(239,68,68,0.12)',
+                }
+              : {}
+          }
+        />
+      </div>
+
+      {/* Actions */}
+      <div className='flex gap-2'>
+        <button
+          onClick={onClose}
+          className='h-11 px-5 text-sm font-semibold rounded-xl border flex-1'
+          style={{
+            borderColor: 'var(--border-strong)',
+            color: 'var(--text-muted)',
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleReset}
+          disabled={!isConfirmed || resetting}
+          className='h-11 px-5 text-sm font-bold rounded-xl flex-1 transition-all flex items-center justify-center gap-2'
+          style={{
+            background:
+              isConfirmed && !resetting ? '#ef4444' : 'rgba(239,68,68,0.15)',
+            color: isConfirmed && !resetting ? '#fff' : 'rgba(239,68,68,0.4)',
+            cursor: isConfirmed && !resetting ? 'pointer' : 'not-allowed',
+          }}
+        >
+          {resetting ? (
+            <>
+              <RotateCcw size={14} className='animate-spin' /> Resetting…
+            </>
+          ) : (
+            <>
+              <AlertTriangle size={14} /> Reset everything
+            </>
+          )}
         </button>
       </div>
     </Modal>
