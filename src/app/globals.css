@@ -3,24 +3,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Light mode tokens ─────────────────────────────────── */
+/* ─── Light mode tokens ─────────────────────────────────────────
+   --brand      : fills that carry DARK text on top (buttons, badges, avatars)
+   --brand-ink  : brand colour for TEXT, icons, rings and bars (readable on light)
+─────────────────────────────────────────────────────────────── */
 :root {
   --brand:          #40FFE1;
-  --brand-dim:      rgba(64,255,225,0.15);
-  --brand-dimmer:   rgba(64,255,225,0.08);
+  --brand-ink:      #0a7f6c;
+  --brand-grad:     linear-gradient(135deg, #40FFE1 0%, #2ccfb6 55%, #259583 100%);
+  --brand-dim:      rgba(37,149,131,0.14);
+  --brand-dimmer:   rgba(37,149,131,0.08);
   --brand-text:     #011412;
 
   --bg-body:        #f0f2f5;
   --bg-page:        #f0f2f5;
   --bg-card:        #ffffff;
-  --bg-card-alt:    #f7f8fa;
-  --bg-input:       #f2f3f5;
+  --bg-card-alt:    #f6f8f9;
+  --bg-input:       #eef0f2;
   --bg-sidebar:     #000d0b;
-  --bg-header:      rgba(240,242,245,0.92);
+  --bg-header:      rgba(240,242,245,0.88);
+  --surface-grad:   linear-gradient(180deg, #ffffff 0%, #fbfcfc 100%);
 
   --text-primary:   #0d0d0d;
-  --text-secondary: #4a4a4a;
-  --text-muted:     #9a9a9a;
+  --text-secondary: #4a4f55;
+  --text-muted:     #7a8087;
   --text-on-brand:  #011412;
   --text-on-dark:   #ffffff;
 
@@ -29,16 +35,18 @@
   --border-card:    rgba(0,0,0,0.06);
 
   --shadow-sm:      0 1px 3px rgba(0,0,0,0.05);
-  --shadow-card:    0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
-  --shadow-card-lg: 0 8px 24px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
-  --shadow-brand:   0 4px 16px rgba(64,255,225,0.25);
+  --shadow-card:    0 2px 10px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.03);
+  --shadow-card-lg: 0 10px 28px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-brand:   0 6px 18px rgba(37,149,131,0.28);
 }
 
-/* ─── Dark mode tokens ──────────────────────────────────── */
+/* ─── Dark mode tokens ──────────────────────────────────────── */
 .dark {
   --brand:          #40FFE1;
-  --brand-dim:      rgba(64,255,225,0.12);
-  --brand-dimmer:   rgba(64,255,225,0.06);
+  --brand-ink:      #40FFE1;
+  --brand-grad:     linear-gradient(135deg, #40FFE1 0%, #2ccfb6 55%, #259583 100%);
+  --brand-dim:      rgba(64,255,225,0.14);
+  --brand-dimmer:   rgba(64,255,225,0.07);
   --brand-text:     #000d0b;
 
   --bg-body:        #0a0a0a;
@@ -47,25 +55,26 @@
   --bg-card-alt:    #1a1a1a;
   --bg-input:       #1e1e1e;
   --bg-sidebar:     #000d0b;
-  --bg-header:      rgba(10,10,10,0.95);
+  --bg-header:      rgba(10,10,10,0.88);
+  --surface-grad:   linear-gradient(160deg, #181818 0%, #111111 100%);
 
   --text-primary:   #f5f5f5;
-  --text-secondary: #a0a0a0;
-  --text-muted:     #505050;
+  --text-secondary: #a8a8a8;
+  --text-muted:     #7c7c7c;
   --text-on-brand:  #000d0b;
   --text-on-dark:   #ffffff;
 
-  --border-default: rgba(255,255,255,0.06);
-  --border-strong:  rgba(255,255,255,0.10);
-  --border-card:    rgba(255,255,255,0.05);
+  --border-default: rgba(255,255,255,0.07);
+  --border-strong:  rgba(255,255,255,0.12);
+  --border-card:    rgba(255,255,255,0.06);
 
   --shadow-sm:      0 1px 3px rgba(0,0,0,0.3);
-  --shadow-card:    0 2px 8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
-  --shadow-card-lg: 0 8px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
-  --shadow-brand:   0 4px 20px rgba(64,255,225,0.20);
+  --shadow-card:    0 2px 10px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-card-lg: 0 10px 28px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05);
+  --shadow-brand:   0 6px 22px rgba(64,255,225,0.22);
 }
 
-/* ─── Base ──────────────────────────────────────────────── */
+/* ─── Base ──────────────────────────────────────────────────── */
 * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 
 html, body {
@@ -78,53 +87,112 @@ html, body {
 body { display: block; }
 .font-serif { font-family: 'Poppins', system-ui, sans-serif; }
 
-/* ─── Components ────────────────────────────────────────── */
+/* ─── Components ────────────────────────────────────────────── */
 @layer components {
+  /* Surfaces */
   .card {
-    background: var(--bg-card);
+    background: var(--surface-grad);
     border: 1px solid var(--border-card);
     box-shadow: var(--shadow-card);
-    @apply rounded-xl;
+    @apply rounded-2xl;
   }
   .card-alt {
     background: var(--bg-card-alt);
     border: 1px solid var(--border-default);
-    @apply rounded-xl;
+    @apply rounded-2xl;
   }
+  /* Always-dark hero surface (balance card, summaries) */
+  .card-hero {
+    background: linear-gradient(135deg, #000d0b 0%, #001a16 55%, #00281f 100%);
+    border: 1px solid rgba(64,255,225,0.12);
+    box-shadow: 0 12px 32px rgba(0,13,11,0.28);
+  }
+  .card-hero-inner {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    @apply rounded-2xl;
+  }
+
+  /* Buttons */
   .btn-primary {
-    background: var(--brand);
+    background: var(--brand-grad);
     color: var(--brand-text);
     box-shadow: var(--shadow-brand);
     @apply font-bold rounded-xl px-5 py-3 text-sm transition-all active:scale-95;
   }
-  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-primary:hover { filter: brightness(1.05); }
+  .btn-primary:disabled { opacity: 0.4; box-shadow: none; cursor: not-allowed; }
   .btn-secondary {
     background: var(--brand-dim);
-    color: var(--brand);
+    color: var(--brand-ink);
     @apply font-bold rounded-xl px-5 py-3 text-sm transition-all active:scale-95;
   }
-  .btn-ghost { color: var(--brand); @apply font-semibold text-sm active:opacity-60 transition-opacity; }
+  .btn-ghost { color: var(--brand-ink); @apply font-semibold text-sm active:opacity-60 transition-opacity; }
+  .icon-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-sm);
+    @apply relative w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-95;
+  }
+
+  /* Form */
   .input {
     background: var(--bg-input);
     color: var(--text-primary);
     border: 1px solid var(--border-strong);
     @apply w-full h-11 text-sm rounded-xl px-3 focus:outline-none font-sans transition-all;
   }
-  .input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-dimmer); }
+  .input:focus { border-color: var(--brand-ink); box-shadow: 0 0 0 3px var(--brand-dimmer); }
   .label { color: var(--text-muted); @apply text-xs font-semibold uppercase tracking-wider mb-1.5 block; }
+
+  /* Chips & pills */
+  .chip {
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    color: var(--text-muted);
+    @apply px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all;
+  }
+  .chip-active {
+    background: var(--brand-grad);
+    border-color: transparent;
+    color: var(--brand-text);
+  }
   .pill { @apply text-xs font-bold px-2.5 py-1 rounded-full; }
-  .pill-ok   { background: rgba(64,255,225,0.15); color: #008f7a; }
-  .pill-warn { background: rgba(251,191,36,0.15);  color: #b45309; }
+  .pill-ok   { background: rgba(64,255,225,0.16); color: #0a7f6c; }
+  .pill-warn { background: rgba(251,191,36,0.16);  color: #b45309; }
   .pill-over { background: rgba(239,68,68,0.15);   color: #dc2626; }
   .dark .pill-ok   { background: rgba(64,255,225,0.12); color: #40FFE1; }
   .dark .pill-warn { background: rgba(251,191,36,0.12); color: #fbbf24; }
   .dark .pill-over { background: rgba(239,68,68,0.12);  color: #fca5a5; }
+  .pill-label {
+    background: rgba(64,255,225,0.10);
+    border: 1px solid rgba(64,255,225,0.16);
+    color: #40FFE1;
+    @apply inline-block text-[10px] font-bold tracking-[0.18em] px-3 py-1.5 rounded-md;
+  }
+  .badge {
+    background: var(--brand);
+    color: #415353;
+    @apply text-[10px] font-black px-1.5 py-0.5 rounded-full leading-none;
+  }
+
+  /* Typography helpers */
   .section-title { color: var(--text-muted); @apply text-[11px] font-bold uppercase tracking-[0.12em]; }
+
+  /* Rows */
   .row-item { @apply flex items-center gap-3 py-3 border-b last:border-0; border-color: var(--border-default); }
   .icon-tile { @apply w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg; }
-  .badge { background: var(--brand); color: var(--brand-text); @apply text-[10px] font-black px-1.5 py-0.5 rounded-full leading-none; }
-  .nav-tab { color: var(--text-muted); @apply flex flex-col items-center gap-0.5 py-2 flex-1 text-[10px] font-bold uppercase tracking-wide transition-colors duration-150; }
-  .nav-tab.active { color: var(--brand); }
+
+  /* Onboarding backdrop */
+  .grid-bg {
+    background-color: #000d0b;
+    background-image:
+      linear-gradient(rgba(64,255,225,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(64,255,225,0.05) 1px, transparent 1px),
+      radial-gradient(60% 40% at 50% 26%, rgba(64,255,225,0.16), transparent 70%);
+    background-size: 36px 36px, 36px 36px, 100% 100%;
+  }
 }
 
 ::-webkit-scrollbar { display: none; }
@@ -132,10 +200,9 @@ body { display: block; }
 
 @media (min-width: 1024px) {
   .card:hover { box-shadow: var(--shadow-card-lg); transition: box-shadow 0.2s ease; }
-  .mobile-hero-only { display: none; }
 }
 
-/* ─── Dark mode overrides ────────────────────────────────── */
+/* ─── Dark mode overrides for legacy utility classes ───────── */
 .dark { color-scheme: dark; }
 .dark .bg-white            { background-color: #141414 !important; }
 .dark .bg-green-50         { background-color: #0a0a0a !important; }
@@ -147,8 +214,8 @@ body { display: block; }
 .dark .bg-amber-50         { background-color: rgba(251,191,36,0.08) !important; }
 .dark .text-green-900      { color: #f5f5f5 !important; }
 .dark .text-green-800      { color: #40FFE1 !important; }
-.dark .text-green-700      { color: #a0a0a0 !important; }
-.dark [class*="text-green-700\/"] { color: rgba(255,255,255,0.65) !important; }
+.dark .text-green-700      { color: #a8a8a8 !important; }
+.dark [class*="text-green-700\/"] { color: rgba(255,255,255,0.70) !important; }
 .dark .text-red-600        { color: #fca5a5 !important; }
 .dark .text-amber-600      { color: #fbbf24 !important; }
 .dark [class*="border-green-800\/"] { border-color: rgba(255,255,255,0.07) !important; }
@@ -159,7 +226,7 @@ body { display: block; }
   color: #f5f5f5 !important;
   border-color: rgba(255,255,255,0.10) !important;
 }
-.dark input::placeholder    { color: #505050 !important; }
+.dark input::placeholder    { color: #6b6b6b !important; }
 .dark select option         { background: #141414; color: #f5f5f5; }
 .dark .rounded-xl.border    { background-color: #141414 !important; }
 .dark .rounded-t-xl         { background-color: #141414 !important; }
@@ -168,6 +235,7 @@ body { display: block; }
 .dark aside[style*="000d0b"]     { background-color: #000d0b !important; }
 .dark aside[style*="000d0b"] nav { background-color: transparent !important; }
 
+/* Smooth theme transitions */
 *, *::before, *::after {
   transition: background-color 0.2s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }

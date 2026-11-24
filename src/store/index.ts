@@ -309,12 +309,7 @@ export const useKurotStore = create<KurotState>()(
             { name: 'Groceries', cat: 'Food', budget: 6000, spent: 5200 },
             { name: 'Transport', cat: 'Transport', budget: 3500, spent: 2800 },
             { name: 'Savings', cat: 'Savings', budget: 8000, spent: 8000 },
-            {
-              name: 'Entertainment',
-              cat: 'Entertainment',
-              budget: 2500,
-              spent: 1800,
-            },
+            { name: 'Entertainment', cat: 'Entertainment', budget: 2500, spent: 1800 },
           ],
         },
         {
@@ -325,12 +320,7 @@ export const useKurotStore = create<KurotState>()(
             { name: 'Groceries', cat: 'Food', budget: 6000, spent: 4900 },
             { name: 'Transport', cat: 'Transport', budget: 3500, spent: 3100 },
             { name: 'Savings', cat: 'Savings', budget: 8000, spent: 8000 },
-            {
-              name: 'Entertainment',
-              cat: 'Entertainment',
-              budget: 2500,
-              spent: 2100,
-            },
+            { name: 'Entertainment', cat: 'Entertainment', budget: 2500, spent: 2100 },
           ],
         },
       ],
@@ -369,9 +359,7 @@ export const useKurotStore = create<KurotState>()(
 
       setCategoryBudget: (category, limit, alertAt) =>
         set((s) => {
-          const existing = s.categoryBudgets.find(
-            (b) => b.category === category,
-          );
+          const existing = s.categoryBudgets.find((b) => b.category === category);
           if (existing)
             return {
               categoryBudgets: s.categoryBudgets.map((b) =>
@@ -379,10 +367,7 @@ export const useKurotStore = create<KurotState>()(
               ),
             };
           return {
-            categoryBudgets: [
-              ...s.categoryBudgets,
-              { category, limit, alertAt },
-            ],
+            categoryBudgets: [...s.categoryBudgets, { category, limit, alertAt }],
           };
         }),
       removeCategoryBudget: (cat) =>
@@ -472,18 +457,8 @@ export const useKurotStore = create<KurotState>()(
         const s = get();
         const now = new Date();
         const months = [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December',
+          'January','February','March','April','May','June',
+          'July','August','September','October','November','December',
         ];
         const month = `${months[now.getMonth()]} ${now.getFullYear()}`;
         const snapshot: MonthSnapshot = {
@@ -511,9 +486,7 @@ export const useKurotStore = create<KurotState>()(
         s.envelopes.forEach((env) => {
           const spent = env.txns.reduce((a, t) => a + t.amt, 0);
           const pct = (spent / env.budget) * 100;
-          const catBudget = s.categoryBudgets.find(
-            (b) => b.category === env.cat,
-          );
+          const catBudget = s.categoryBudgets.find((b) => b.category === env.cat);
           const alertAt = catBudget?.alertAt ?? 80;
           if (pct >= alertAt && pct < 100) {
             newNudges.push({
@@ -541,9 +514,7 @@ export const useKurotStore = create<KurotState>()(
           .filter((d) => d.status === 'active')
           .forEach((d) => {
             const due = new Date(d.dueDate);
-            const daysLeft = Math.ceil(
-              (due.getTime() - now.getTime()) / 86400000,
-            );
+            const daysLeft = Math.ceil((due.getTime() - now.getTime()) / 86400000);
             if (daysLeft <= 30 && daysLeft >= 0) {
               newNudges.push({
                 id: uid(),
@@ -559,9 +530,7 @@ export const useKurotStore = create<KurotState>()(
         s.goals.forEach((g) => {
           const pct = (g.currentAmount / g.targetAmount) * 100;
           const due = new Date(g.targetDate);
-          const daysLeft = Math.ceil(
-            (due.getTime() - now.getTime()) / 86400000,
-          );
+          const daysLeft = Math.ceil((due.getTime() - now.getTime()) / 86400000);
           const totalDays = Math.ceil(
             (due.getTime() - new Date(g.startDate).getTime()) / 86400000,
           );
@@ -582,9 +551,7 @@ export const useKurotStore = create<KurotState>()(
           .filter((r) => r.active)
           .forEach((r) => {
             const due = new Date(r.nextDue);
-            const daysLeft = Math.ceil(
-              (due.getTime() - now.getTime()) / 86400000,
-            );
+            const daysLeft = Math.ceil((due.getTime() - now.getTime()) / 86400000);
             if (daysLeft <= 3 && daysLeft >= 0) {
               newNudges.push({
                 id: uid(),
@@ -597,12 +564,13 @@ export const useKurotStore = create<KurotState>()(
             }
           });
 
-        set({
-          nudges: [...newNudges, ...s.nudges.filter((n) => !n.read)].slice(
-            0,
-            20,
-          ),
-        });
+        // Realtime-safe: keep nudges whose condition still holds (stable ids),
+        // add genuinely new ones, and drop ones that no longer apply.
+        const live = new Set(newNudges.map((n) => n.message));
+        const kept = s.nudges.filter((n) => live.has(n.message));
+        const keptMessages = new Set(kept.map((n) => n.message));
+        const fresh = newNudges.filter((n) => !keptMessages.has(n.message));
+        set({ nudges: [...fresh, ...kept].slice(0, 20) });
       },
 
       markNudgeRead: (id) =>
